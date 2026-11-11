@@ -11,30 +11,30 @@ A better forecast means less stock sitting in the warehouse, less money tied up 
 
 ## Results
 
-In the final test, with December 2015 set aside from the start, the model forecasts one day ahead with a **mean error of 5.20 units**, against 9.10 for the usual purchasing rule. It beats the rule in 13 of the 20 series.
+In December 2015, a month set aside from the start and never used for training, the model forecasts one day ahead with a **mean error of 7.45 units** over the month's 31 mornings, against 10.43 for the usual purchasing rule. It beats the rule on 20 of the 31 mornings.
 
 | Measure | Model | "Same as last week" rule |
 |---|---|---|
-| One day ahead, 20 series (final test, 16 December 2015) | **5.20** units | 9.10 units |
-| Eight days ahead, both stores combined (final test, 24 to 31 December 2015) | **114.50** units/day | 123.25 units/day |
-| Eight days ahead from 12 dates in 2015, per product and day | **9.19** units | 10.68 units |
-| One-day-ahead validation (November 2015, 3 folds of 8 days) | **7.58** units | 10.09 units |
+| One day ahead, the 31 mornings of December 2015 | **7.45** units | 10.43 units |
+| Eight days ahead from 12 dates in 2015, per product and day | **8.87** units | 10.68 units |
+| Eight days ahead, both stores combined (24 to 31 December 2015) | **112.75** units/day | 123.25 units/day |
+| One-day-ahead validation (November 2015, 3 folds of 8 days) | **7.46** units | 10.09 units |
 
 The baseline is what a purchasing manager would do without a model: forecast for each day what was sold on the same weekday of the previous week. Every figure is a mean absolute error, in units, measured against that rule.
 
 ![Actual sales, model and rule for both stores combined, 24 to 31 December 2015](docs/graficos/01_total_dos_tiendas.png)
 
-In Christmas week, for both stores combined, the model's error is 7 % lower than the rule's.
+In Christmas week, for both stores combined, the model's error is 9 % lower than the rule's.
 
 ![Mean error by horizon day, from 12 dates in 2015](docs/graficos/02_error_por_horizonte.png)
 
-The test from 12 dates repeats the whole process at each one: it trains on sales up to that day and forecasts the following 8. The model beats the rule on all 8 days of the horizon and in 153 of the 240 eight-day forecasts.
+The test from 12 dates repeats the whole process at each one: it trains on sales up to that day and forecasts the following 8. The error is 17 % lower than the rule's, and the model beats it on all 8 days of the horizon and in 160 of the 240 eight-day forecasts. It also beats two harder baselines: the mean of the last 7 days (9.67) and the mean of the same weekday over the previous 4 weeks (10.10).
 
-Before fixing the model, that same test was repeated with nine configurations, each with two ways of rounding the forecast: default values, a hyperparameter search, a competition between six algorithms and two data corrections. All of them beat last week's sales, and the per-series hyperparameter search was the change that lowered the error the most. The figures are in the [experiment document](docs/05_experimento.md) and the full results in [`informes/experimento.json`](informes/experimento.json).
+Before fixing the model, that same test was repeated with nine configurations: default values, a hyperparameter search, a competition between six algorithms and two data corrections. In 2015 the per-series hyperparameter search was the change that lowered the error the most; in December that advantage was not confirmed. The figures are in the [experiment document](docs/05_experimento.md) and the full results in [`informes/experimento.json`](informes/experimento.json).
 
 ![Error of each of the 20 series in the November 2015 validation](docs/graficos/03_error_por_producto.png)
 
-In the November validation, one day ahead, the model improves on the rule in 19 of the 20 series.
+In the November validation, one day ahead, the model improves on the rule in 20 of the 20 series.
 
 The chart titles and labels are in Spanish; the model is shown in blue, the rule in grey and actual sales in black.
 
@@ -52,18 +52,18 @@ The chart titles and labels are in Spanish; the model is shown in blue, the rule
 | Several days in a row | Recursive 8-day forecast: each forecast day feeds the next one. |
 | Hierarchy | Product, store and total always add up, because they are summed bottom-up. |
 | Many series | One model per product and store. The code is the same for any number of series; it has been tested with 20. |
-| Days without sales | They are identified and separated: 1,745 single days and 1,259 days with the product out of the store, with dedicated features for stock-out runs. |
+| Days without sales | They are identified and separated: 1,745 single days and 1,259 days with the product out of the store, with dedicated features for zero-sales runs. |
 
 ## Production simulation
 
-The project includes the batch process that would run every morning. It checks the incoming data, forecasts the next 8 days with sales known up to the previous day, and scores each forecast once actual sales exist. Retraining produces a candidate model, which replaces the one in use only if it does not validate worse, and the previous model can be restored with one command.
+The project includes the batch process that would run every morning. It checks the incoming data, forecasts the next 8 days with sales known up to the previous day, and scores each forecast once actual sales exist. Retraining produces a candidate model, which replaces the one in use only if, measured against the rule, it validates at least as well, and the previous model can be restored with one command.
 
 A GitHub Actions workflow runs that process over the 31 mornings of December 2015, one after another. December was already used in the final test, so this simulation shows that the process works day by day and does not add a new test of the model.
 
 To see the deployment evidence:
 
 - The [Actions](https://github.com/jleonceo/store-sales-forecasting-ml/actions) tab keeps every run of the `produccion` workflow, with its date, the log of the 31 mornings as the run summary and the outputs as a downloadable artifact. The first one, from 11 November 2026, is [here](https://github.com/jleonceo/store-sales-forecasting-ml/actions/runs/43074677107).
-- [`informes/despliegue.json`](informes/despliegue.json) records the latest run: the 31 mornings expected and completed, the model in use and the check that the morning of 24 December reproduces the final test figures.
+- [`informes/despliegue.json`](informes/despliegue.json) records the latest run of the process in this repository: the 31 mornings expected and completed, the model in use and the check that the morning of 24 December gives the expected figures.
 - [`produccion/salidas/`](produccion/salidas/) holds the forecast and the evaluation of each morning, so they can be read without downloading anything.
 
 ## How to reproduce it
@@ -81,20 +81,22 @@ To launch the production workflow on GitHub: **Actions** tab, **produccion** wor
 
 ## Documentation
 
-The technical documents are written in Spanish.
+The project follows the CRISP-DM phases, and each document belongs to one. The technical documents are written in Spanish.
 
-- [Data and quality](docs/01_datos_y_calidad.md): what the data contains and how each issue was handled.
-- [Features](docs/02_variables.md): what the model sees for each day and why no feature looks into the future.
-- [Model and validation](docs/03_modelo_y_validacion.md): the algorithm, the search and the three measurements.
-- [Evaluation](docs/04_evaluacion.md): results by horizon, by series and by level.
-- [Experiment](docs/05_experimento.md): the alternatives measured before fixing the model.
-- [Production](docs/06_produccion.md): the daily process, retraining, alerts and rollback.
-- [Model card](docs/ficha_del_modelo.md): for whoever is going to use the model, with its limits.
-- [Input contract](produccion/contrato_entrada.md): what each day's file must contain.
+| Phase | Document |
+|---|---|
+| Business understanding | This page: the problem and the rule the model is compared with |
+| Data understanding | [Data and quality](docs/01_datos_y_calidad.md): what the data contains and how each issue was handled |
+| Data preparation | [Features](docs/02_variables.md): what the model sees for each day and why no feature looks into the future |
+| Modeling | [Model and validation](docs/03_modelo_y_validacion.md) and [Experiment](docs/05_experimento.md): the algorithm, the search and the alternatives measured |
+| Evaluation | [Evaluation](docs/04_evaluacion.md): results by horizon, by series and by level |
+| Deployment | [Production](docs/06_produccion.md), [Model card](docs/ficha_del_modelo.md) and [Input contract](produccion/contrato_entrada.md): the daily process, retraining, rollback and what it needs and delivers |
+
+An external code review found errors in the first version; evaluation led back to data preparation and modeling, as CRISP-DM expects. What changed is in [CHANGELOG.md](CHANGELOG.md).
 
 ## Limits and next step
 
-The final test is a single month: one day at one day ahead and one week at 8 days ahead. In that week, product by product, the model ties with the rule (10.01 against 10.05); the advantage appears when the stores are added up and in the test from 12 dates. The code has been tested with 20 series.
+The final test is a single month. In Christmas week, product by product, the model is slightly ahead of the rule (9.61 against 10.05), but the difference is within chance; the clear advantage shows when the stores are added up, one day ahead and in the test from 12 dates. The model tends to forecast slightly too much, and its largest errors are on days without sales. The code has been tested with 20 series.
 
 Beating the rule product by product in weeks like Christmas requires inventory data: knowing whether a day without sales happened because nobody bought or because the shelf was empty.
 

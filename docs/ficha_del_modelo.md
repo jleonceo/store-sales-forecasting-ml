@@ -23,8 +23,8 @@ Una fila por serie y día previsto, con las unidades en números enteros y nunca
 ## Cómo está hecho
 
 - **Algoritmo:** `HistGradientBoostingRegressor`, de scikit-learn, uno por serie.
-- **Variables:** 70 por serie, elegidas entre 101. Son ventas y precios de días anteriores, medias móviles, calendario, eventos y marcas de rachas sin venta.
-- **Hiperparámetros:** búsqueda de 10 combinaciones por serie, con validación temporal de 3 cortes de 8 días y semilla fija.
+- **Variables:** de 63 a 70 por serie, las que un árbol puede usar entre 100 candidatas. Son ventas y precios de días anteriores, medias móviles, la media de ventas del mes y del día de la semana, los días sin evento y marcas de rachas sin venta.
+- **Hiperparámetros:** búsqueda de 10 combinaciones por serie más los valores por defecto, con validación temporal de 3 cortes de 8 días y semilla fija.
 - **Datos de entrenamiento:** ventas del 01/01/2013 al 30/11/2015, que son 21.280 días de serie y 614.451 unidades.
 - **Previsión a varios días:** recursiva. Cada día previsto pasa a ser la venta de ese día para prever el siguiente.
 
@@ -36,28 +36,28 @@ El error es error absoluto medio, en unidades. La referencia es prever la venta 
 
 | Medida | Modelo | Referencia |
 |---|---|---|
-| Un día vista, prueba final del 16/12/2015 | 5,20 | 9,10 |
-| Ocho días vista desde 12 fechas de 2015, por serie y día | 9,19 | 10,68 |
-| Ocho días vista, total de las dos tiendas, del 24 al 31/12/2015 | 114,50 | 123,25 |
-| Ocho días vista, por serie y día, del 24 al 31/12/2015 | 10,01 | 10,05 |
+| Un día vista, las 31 mañanas de diciembre de 2015 | 7,45 | 10,43 |
+| Ocho días vista desde 12 fechas de 2015, por serie y día | 8,87 | 10,68 |
+| Ocho días vista, total de las dos tiendas, del 24 al 31/12/2015 | 112,75 | 123,25 |
+| Ocho días vista, por serie y día, del 24 al 31/12/2015 | 9,61 | 10,05 |
 
-En la prueba desde 12 fechas el modelo tiene menos error que la referencia en los 8 días del horizonte. Su error sube de 7,86 unidades el primer día a cerca de 10 el octavo. El detalle está en [04_evaluacion.md](04_evaluacion.md).
+En la prueba desde 12 fechas el modelo tiene menos error que la referencia en los 8 días del horizonte, y también menos que la media de los 7 últimos días (9,67) y que la media del mismo día en 4 semanas (10,10). Su error sube de 7,68 unidades el primer día a cerca de 10 el octavo. El detalle está en [04_evaluacion.md](04_evaluacion.md).
 
 ## Límites
 
-- **Días sin venta.** Es donde más se equivoca. Cuando un producto deja de venderse o la tienda cierra, el modelo sigue previendo venta. En la semana de Navidad de 2015, el error en los días sin venta fue de 18,16 unidades, frente a 7,56 en los días con venta. Sin el dato de inventario no puede saber si un cero es falta de demanda o falta de producto.
-- **Tendencia a prever de más.** El sesgo medio es de 1,21 unidades en la prueba desde 12 fechas y de 4,76 en la semana de Navidad.
-- **Producto a producto en semanas atípicas.** Del 24 al 31/12/2015 iguala a la referencia, sin mejorarla. La ventaja de esa semana está en el total.
-- **Festivos de cierre.** El 25/12/2015 previó 443 unidades en el total y se vendió 1. El evento está en el calendario, pero la historia solo contiene dos días de Navidad de los que aprender.
+- **Días sin venta.** Es donde más se equivoca. Cuando un producto deja de venderse o la tienda cierra, el modelo sigue previendo venta. En la semana de Navidad de 2015, el error en los días sin venta fue de 16,76 unidades, frente a 7,46 en los días con venta. Sin el dato de inventario no puede saber si un cero es falta de demanda o falta de producto.
+- **Tendencia a prever de más.** El sesgo medio es de 1,22 unidades en la prueba desde 12 fechas y de 4,83 en la semana de Navidad.
+- **Producto a producto en semanas atípicas.** Del 24 al 31/12/2015 queda algo por delante de la referencia, pero la diferencia cabe en el azar. La ventaja clara de esa semana está en el total.
+- **Festivos de cierre.** El 25/12/2015 previó 423 unidades en el total y se vendió 1. La historia solo tiene dos días de Navidad, y un evento de 2 días no se puede aprender con una variable propia.
 - **Frecuencia de reentreno.** En la simulación se entrenó una vez, con datos hasta el 30/11/2015. Cada cuánto conviene reentrenar no está medido.
 - **Alcance probado.** 20 series de un departamento de alimentación en dos tiendas de un mismo estado, con datos de 2013 a 2015. No está medido con otros productos, otras tiendas ni otro periodo.
 - **Una sola prueba final.** Diciembre de 2015 es un mes. Sus cifras dicen cómo fue ese mes y no garantizan el siguiente.
-- **Precio.** Usa el precio semanal de los días anteriores. No ve una promoción anunciada para la semana que viene.
+- **Precio.** Usa el precio semanal de los días anteriores. Al prever varios días seguidos, toma como conocido el precio de los días previstos, porque la tienda fija sus precios por semanas.
 - **Productos nuevos.** Una serie necesita historia para tener modelo. No hay previsión para un producto que acaba de entrar.
 
 ## Mantenimiento
 
-- **Reentreno.** `produccion/reentrenar.py` entrena un modelo candidato y solo sustituye al que está en uso si no valida peor.
+- **Reentreno.** `produccion/reentrenar.py` entrena un modelo candidato y solo sustituye al que está en uso si no valida peor frente a la referencia.
 - **Seguimiento.** Cada previsión se compara con la venta real cuando existe. El error queda registrado por mañana junto al de la referencia.
 - **Vuelta atrás.** `produccion/volver_atras.py` restaura el modelo anterior.
 - **Versiones.** Los modelos solo se cargan con las versiones de scikit-learn y pandas con que se entrenaron, fijadas en `requirements.txt`.
@@ -66,4 +66,4 @@ El proceso completo está en [06_produccion.md](06_produccion.md).
 
 ## Fuente de las cifras
 
-Las cifras de acierto y de sesgo están en `informes/resultados.json`. El error en los días con y sin venta procede del análisis de evaluación previo a este repositorio, hecho con el mismo modelo.
+Las cifras de acierto, de sesgo y del error en los días con y sin venta están en `informes/resultados.json` e `informes/backtest.json`.

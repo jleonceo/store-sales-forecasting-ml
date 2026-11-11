@@ -7,6 +7,7 @@ Lee el manifiesto de `modelos/` (la validación de cada serie), las salidas de l
   noviembre de 2015 (3 cortes de 8).
 - Un día vista: la mañana del 16/12/2015, primer día de su previsión.
 - Ocho días vista: la mañana del 24/12/2015, sus 8 días del 24 al 31/12, por serie, por tienda y en el total.
+- Diciembre entero: las 31 mañanas a un día vista, las 24 con los 8 días medidos y el error por horizonte.
 - Simulación: las 31 mañanas de diciembre.
 
 Uso:  python scripts/resultados.py
@@ -16,6 +17,7 @@ import json
 import sys
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 
 RAIZ = Path(__file__).resolve().parents[1]
@@ -85,20 +87,67 @@ def filas_con_real(dia, total):
     return m[m["real"].notna()].astype({"real": int})
 
 
+def intervalo_filas(filas, remuestreos=1000, semilla=42):
+    """Intervalo del 95 % de la diferencia de error (modelo − referencia), remuestreando previsiones sueltas."""
+    d = ((filas["real"] - filas["prevision"]).abs() - (filas["real"] - filas["referencia"]).abs()).to_numpy(dtype=float)
+    azar = np.random.default_rng(semilla)
+    medias = [d[azar.integers(0, len(d), len(d))].mean() for _ in range(remuestreos)]
+    return [float(np.percentile(medias, 2.5)), float(np.percentile(medias, 97.5))]
+
+
+def por_clase_de_dia(filas):
+    """Error y sesgo del modelo en los días con venta y en los días sin venta."""
+    return {nombre: {"error": error_medio(g["real"], g["prevision"]),
+                     "sesgo": float((g["prevision"] - g["real"]).mean()), "filas": int(len(g))}
+            for nombre, g in [("con_venta", filas[filas["real"] > 0]), ("sin_venta", filas[filas["real"] == 0])]}
+
+
+def mes_entero(total):
+    """Todas las mañanas de diciembre: a un día vista, a 8 días en las mañanas con los 8 días medidos, y por
+    horizonte. Cada mañana cuenta como ganada si el error medio de sus series es menor que el de la referencia."""
+    mananas = sorted(p.name for p in CARPETA_SALIDAS.iterdir() if p.is_dir())
+    filas = pd.concat([filas_con_real(m, total).assign(manana=m) for m in mananas], ignore_index=True)
+
+    def gana(g):
+        return error_medio(g["real"], g["prevision"]) < error_medio(g["real"], g["referencia"])
+
+    uno = filas[filas["horizonte"] == 1]
+    completas = filas.groupby("manana")["horizonte"].transform("nunique") == 8
+    ocho = filas[completas]
+    sumas = ocho.groupby(["manana", "date"])[["real", "prevision", "referencia"]].sum().reset_index()
+    return {"un_dia": {"error": error_medio(uno["real"], uno["prevision"]),
+                       "referencia": error_medio(uno["real"], uno["referencia"]),
+                       "mananas_mejor": int(uno.groupby("manana").apply(gana, include_groups=False).sum()),
+                       "mananas": int(uno["manana"].nunique()), "filas": int(len(uno))},
+            "ocho_dias": {"error": error_medio(ocho["real"], ocho["prevision"]),
+                          "referencia": error_medio(ocho["real"], ocho["referencia"]),
+                          "mananas_mejor": int(ocho.groupby("manana").apply(gana, include_groups=False).sum()),
+                          "total": {"error": error_medio(sumas["real"], sumas["prevision"]),
+                                    "referencia": error_medio(sumas["real"], sumas["referencia"]),
+                                    "mananas_mejor": int(sumas.groupby("manana").apply(gana, include_groups=False).sum()),
+                                    "mananas": int(sumas["manana"].nunique())},
+                          "mananas": int(ocho["manana"].nunique()), "filas": int(len(ocho))},
+            "por_horizonte": {int(h): {"error": error_medio(g["real"], g["prevision"]),
+                                       "referencia": error_medio(g["real"], g["referencia"])}
+                              for h, g in filas.groupby("horizonte", sort=True)}}
+
+
 if __name__ == "__main__":
     manifiesto = json.loads((CARPETA_MODELOS / "manifiesto.json").read_text(encoding="utf-8"))
     val = manifiesto["validacion"]
     validacion = {"error": sum(v["error"] for v in val.values()) / len(val),
                   "referencia": sum(v["referencia"] for v in val.values()) / len(val),
-                  "series_mejor": sum(v["error"] < v["referencia"] for v in val.values()), "series": len(val)}
+                  "series_mejor": sum(v["error"] < v["referencia"] for v in val.values()), "series": len(val),
+                  "por_serie": {s: {"error": v["error"], "referencia": v["referencia"]} for s, v in sorted(val.items())}}
 
     historia, diciembre, total = historia_y_diciembre(BASE_HISTORIA, BASE_DICIEMBRE)
-    uno =filas_con_real(DIA_UNO, total)
+    uno = filas_con_real(DIA_UNO, total)
     uno = uno[uno["horizonte"] == 1]
     un_dia = {"dia": DIA_UNO, "error": error_medio(uno["real"], uno["prevision"]),
               "referencia": error_medio(uno["real"], uno["referencia"]),
               "series_mejor": int(((uno["real"] - uno["prevision"]).abs()
-                                   < (uno["real"] - uno["referencia"]).abs()).sum()), "series": int(len(uno))}
+                                   < (uno["real"] - uno["referencia"]).abs()).sum()), "series": int(len(uno)),
+              "intervalo_diferencia": intervalo_filas(uno)}
 
     ocho = filas_con_real(DIA_OCHO, total)
     por_serie = {s: {"error": error_medio(g["real"], g["prevision"]),
@@ -107,6 +156,7 @@ if __name__ == "__main__":
                  "error": error_medio(ocho["real"], ocho["prevision"]),
                  "referencia": error_medio(ocho["real"], ocho["referencia"]),
                  "sesgo": float((ocho["prevision"] - ocho["real"]).mean()),
+                 "intervalo_diferencia": intervalo_filas(ocho), "por_clase_de_dia": por_clase_de_dia(ocho),
                  "series_mejor": sum(v["error"] < v["referencia"] for v in por_serie.values()),
                  "series": len(por_serie), "total": nivel(ocho, []), "por_tienda": nivel(ocho, ["store_id"]),
                  "por_serie": por_serie,
@@ -120,7 +170,7 @@ if __name__ == "__main__":
 
     d = {"datos": resumen_datos(historia, diciembre), "entrenado_hasta": manifiesto["entrenado_hasta"],
          "validacion": validacion, "un_dia": un_dia,
-         "ocho_dias": ocho_dias, "simulacion": simulacion,
+         "ocho_dias": ocho_dias, "diciembre_entero": mes_entero(total), "simulacion": simulacion,
          "backtest": json.loads(BACKTEST.read_text(encoding="utf-8")) if BACKTEST.exists() else None}
     SALIDA.parent.mkdir(exist_ok=True)
     SALIDA.write_text(json.dumps(d, ensure_ascii=False, indent=2, allow_nan=False), encoding="utf-8")

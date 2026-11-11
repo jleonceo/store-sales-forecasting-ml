@@ -77,6 +77,23 @@ def referencia(reales, serie, fecha, origen):
     return reales[(serie, (pd.Timestamp(fecha) - pd.Timedelta(days=paso)).strftime("%Y-%m-%d"))]
 
 
+def media_ultimos_dias(reales, serie, origen, dias=7):
+    """Otra referencia: la media de las ventas de los `dias` días que terminan en el origen, igual para todo el
+    horizonte."""
+    fin = pd.Timestamp(origen)
+    return float(np.mean([reales[(serie, (fin - pd.Timedelta(days=k)).strftime("%Y-%m-%d"))] for k in range(dias)]))
+
+
+def media_mismo_dia(reales, serie, fecha, origen, semanas=4):
+    """Otra referencia: la media de las ventas del mismo día de la semana en las `semanas` semanas más recientes que ya
+    se conocían el día del origen."""
+    paso = 7
+    while (pd.Timestamp(fecha) - pd.Timedelta(days=paso)).strftime("%Y-%m-%d") > origen:
+        paso += 7
+    return float(np.mean([reales[(serie, (pd.Timestamp(fecha) - pd.Timedelta(days=paso + 7 * k)).strftime("%Y-%m-%d"))]
+                          for k in range(semanas)]))
+
+
 def medir(previsiones, reales, origen):
     """Añade la venta real y la referencia a cada previsión que ya tiene venta real; las demás quedan sin medir."""
     p = previsiones.copy()

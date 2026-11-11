@@ -9,7 +9,7 @@
   "dias_a_prever": 8,
   "series_esperadas": 20,
   "simulacion": {"desde": "2015-12-01", "hasta": "2015-12-31"},
-  "reentreno": {"criterio": "el modelo nuevo sustituye al vigente si su error de validación no es mayor que el del vigente más la tolerancia", "tolerancia": 0.05},
+  "reentreno": {"criterio": "el modelo nuevo sustituye al vigente si su error de validación dividido por el de la regla en los mismos días no es mayor que el del vigente más la tolerancia", "tolerancia": 0.01},
   "programacion": "GitHub Actions: flujo produccion.yml, lanzado a mano (Run workflow) o al cambiar el código de producción",
   "avisos": {"por_error": "el flujo falla y GitHub avisa por correo a quien lo lanzó", "por_ausencia": "si faltan ejecuciones de la ventana, la simulación termina con error y el flujo también"}
 }

@@ -12,15 +12,15 @@
   },
   "reentreno": {
     "promovido": true,
-    "nuevo": 7.584985068569635,
-    "vigente": 7.584985068569635,
-    "motivo": "el candidato no valida peor que el vigente",
+    "nuevo": 0.7399167992768799,
+    "vigente": 0.7399167992768799,
+    "motivo": "el candidato no valida peor que el vigente frente a la regla",
     "entrenado_hasta": "2015-11-30"
   },
   "modelo_en_uso": {
     "entrenado_hasta": "2015-11-30",
-    "fecha": "2026-11-11T18:46:46",
-    "error_validacion": 7.584985068569635
+    "fecha": "2026-11-11T22:21:33",
+    "error_validacion": 7.4623692193737
   },
   "ventana": {
     "desde": "2015-12-01",
@@ -33,10 +33,10 @@
     "datos": "diciembre de 2015, que no se usó para entrenar",
     "control": {
       "manana": "2015-12-24",
-      "error": 10.0125,
+      "error": 9.6125,
       "referencia": 10.05,
       "esperado": {
-        "error": 10.0125,
+        "error": 9.6125,
         "referencia": 10.05
       },
       "coincide": true
@@ -47,7 +47,7 @@
         "2015-12-24"
       ],
       "previsiones_comunes": 140,
-      "cambian": 98
+      "cambian": 88
     },
     "resultado": "OK"
   }

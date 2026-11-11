@@ -1,6 +1,6 @@
 # Contrato de entrada
 
-El proceso de cada mañana solo prevé si los datos que recibe cumplen este contrato. Si falta una columna, un tipo no es el suyo o una serie no trae la venta de la víspera, la ejecución para sin dejar previsión y anota el motivo. Así ninguna previsión sale de datos incompletos sin que quede constancia.
+El proceso de cada mañana solo prevé si los datos que recibe cumplen este contrato. Si falta una columna, un tipo no es el suyo o falta alguna venta anterior al día, la ejecución para sin dejar previsión y anota el motivo. Así ninguna previsión sale de datos incompletos sin que quede constancia.
 
 ## Qué se entrega
 
@@ -48,8 +48,9 @@ Para la mañana de un día `D`, el proceso toma la tabla diaria con las ventas c
 4. **Precio.** Ningún día llega sin precio.
 5. **Días seguidos.** Ninguna serie tiene huecos entre su primer día y el último. Las variables cuentan días hacia atrás por filas: un hueco las desplazaría sin dar error.
 6. **Series.** Llegan exactamente las series esperadas, que son 20 según `produccion/config.json`.
-7. **Venta de la víspera.** La última venta conocida de todas las series es la del día `D - 1`. Si una serie se quedó en `D - 2`, la ejecución para.
-8. **El propio día.** Llegan el calendario y el precio del día `D` para todas las series.
+7. **Ninguna venta vacía antes de `D`.** Todos los días anteriores a `D` traen su venta, en todas las series. Un vacío a mitad de la historia cambiaría los retardos sin dar error, y una serie sin ninguna venta se colaría como si estuviera completa.
+8. **Venta de la víspera.** La última venta conocida de todas las series es la del día `D - 1`. Si una serie se quedó en `D - 2`, la ejecución para.
+9. **El propio día.** Llegan el calendario y el precio del día `D` para todas las series.
 
 Si la base trae calendario y precio de menos de 8 días a partir de `D`, la ejecución no para: prevé los días que haya y lo deja escrito como aviso.
 
@@ -74,4 +75,4 @@ Cuando el contrato se cumple, `produccion/salidas/<día>/prevision.csv` trae una
 
 - Las comprobaciones de la mañana están en `validar_entrada` y `comprobar_dia`, en `src/forecast/produccion.py`.
 - Las comprobaciones al unir las tablas están en `src/forecast/datos.py`.
-- `tests/probar_produccion.py` provoca cada fallo a propósito y comprueba que el proceso para: una columna que falta, un tipo cambiado, un día repetido, un día sin precio, una serie menos, una venta de la víspera que no llega y un día sin calendario.
+- `tests/probar_produccion.py` provoca cada fallo a propósito y comprueba que el proceso para: una columna que falta, un tipo cambiado, un día repetido, un día sin precio, una serie menos, una venta vacía a mitad de la historia, una serie sin ninguna venta, una venta de la víspera que no llega y un día sin calendario.

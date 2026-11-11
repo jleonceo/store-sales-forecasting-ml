@@ -10,7 +10,8 @@ on:
 
 jobs:
   simulacion:
-    runs-on: ubuntu-latest
+    # Sistema fijado para que un cambio de GitHub en ubuntu-latest no mueva las cifras sin avisar
+    runs-on: ubuntu-24.04
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v7

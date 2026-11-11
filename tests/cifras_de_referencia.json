@@ -1,10 +1,37 @@
 {
-  "_que_es": "Cifras esperadas, calculadas por una implementación independiente de la misma cadena antes de escribir la de este repositorio. probar_resultados.py compara con ellas lo que sale, con una tolerancia de 0,05 unidades.",
-  "datos": {"filas": 21280, "unidades": 614451, "precios_rellenados": 71, "filas_sin_historia": 300,
-            "filas_modelado": 20980, "dias_sin_ventas_sueltos": 1745, "dias_fuera_de_la_tienda": 1259},
-  "validacion": {"error": 7.584985068569635, "referencia": 10.085416666666669, "series_mejor": 19},
-  "un_dia": {"error": 5.2, "referencia": 9.1, "series_mejor": 13},
-  "ocho_dias": {"error": 10.0125, "referencia": 10.05, "series_mejor": 12,
-                "total": {"error": 114.5, "referencia": 123.25}},
-  "backtest": {"error": 9.188541666666667, "referencia": 10.678125, "bloques_mejor": 153, "bloques": 240}
+  "_que_es": "Cifras esperadas. Las de los datos y las de la regla de la semana anterior se calcularon por una implementación independiente de la misma cadena antes de escribir este repositorio. Las del modelo son las de la versión corregida del 11/11/2026, recalculadas aparte desde las bases con sqlite3 y sin el paquete del repositorio (16/12, 24/12 y backtest). probar_resultados.py compara con ellas lo que sale, con una tolerancia de 0,05 unidades.",
+  "datos": {
+    "filas": 21280,
+    "unidades": 614451,
+    "precios_rellenados": 71,
+    "filas_sin_historia": 300,
+    "filas_modelado": 20980,
+    "dias_sin_ventas_sueltos": 1745,
+    "dias_fuera_de_la_tienda": 1259
+  },
+  "validacion": {
+    "error": 7.4623692193737,
+    "referencia": 10.085416666666667,
+    "series_mejor": 20
+  },
+  "un_dia": {
+    "error": 4.3,
+    "referencia": 9.1,
+    "series_mejor": 13
+  },
+  "ocho_dias": {
+    "error": 9.6125,
+    "referencia": 10.05,
+    "series_mejor": 12,
+    "total": {
+      "error": 112.75,
+      "referencia": 123.25
+    }
+  },
+  "backtest": {
+    "error": 8.8734375,
+    "referencia": 10.678125,
+    "bloques_mejor": 160,
+    "bloques": 240
+  }
 }

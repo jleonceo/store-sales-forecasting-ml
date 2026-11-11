@@ -93,8 +93,17 @@ def cargar_modelos(carpeta=None):
     return {s: joblib.load(carpeta / f) for s, f in manifiesto["modelos"].items()}, manifiesto
 
 
+def error_frente_a_regla(manifiesto):
+    """El error de validación dividido por el de la regla en los mismos días. Cada modelo se valida en sus últimos
+    días de entrenamiento, que no son los mismos si se entrenaron hasta fechas distintas; dividir por la regla quita
+    lo fáciles o difíciles que fueron esos días."""
+    val = manifiesto["validacion"].values()
+    return sum(v["error"] for v in val) / sum(v["referencia"] for v in val)
+
+
 def promover(c=None):
-    """Compara el candidato con el vigente y lo pone en uso si no es peor. El vigente pasa a `anteriores/`.
+    """Compara el candidato con el vigente y lo pone en uso si no es peor frente a la regla. El vigente pasa a
+    `anteriores/`.
 
     Devuelve la decisión con sus cifras. Sin modelo vigente, el candidato pasa siempre.
     """
@@ -104,24 +113,27 @@ def promover(c=None):
     tolerancia = c["reentreno"]["tolerancia"]
     if (vigente / "manifiesto.json").exists():
         actual = json.loads((vigente / "manifiesto.json").read_text(encoding="utf-8"))
-        if nuevo["error_validacion"] > actual["error_validacion"] + tolerancia:
-            return {"promovido": False, "nuevo": nuevo["error_validacion"], "vigente": actual["error_validacion"],
-                    "motivo": "el candidato valida peor que el vigente; el vigente sigue en uso"}
+        if error_frente_a_regla(nuevo) > error_frente_a_regla(actual) + tolerancia:
+            return {"promovido": False, "nuevo": error_frente_a_regla(nuevo), "vigente": error_frente_a_regla(actual),
+                    "motivo": "el candidato valida peor que el vigente frente a la regla; el vigente sigue en uso"}
         destino = anteriores / datetime.now().strftime("%Y%m%d_%H%M%S")
         destino.parent.mkdir(parents=True, exist_ok=True)
         shutil.move(str(vigente), str(destino))
-        previo = actual["error_validacion"]
+        previo = error_frente_a_regla(actual)
     else:
         previo = None
     shutil.move(str(candidato), str(vigente))
-    return {"promovido": True, "nuevo": nuevo["error_validacion"], "vigente": previo,
-            "motivo": "no había modelo vigente" if previo is None else "el candidato no valida peor que el vigente"}
+    return {"promovido": True, "nuevo": error_frente_a_regla(nuevo), "vigente": previo,
+            "motivo": "no había modelo vigente" if previo is None else
+            "el candidato no valida peor que el vigente frente a la regla"}
 
 
 def volver_atras(c=None):
     """Restaura el último modelo de `anteriores/` como vigente; el vigente se guarda también en `anteriores/`."""
     vigente, _, anteriores = carpetas_modelos(c)
-    previos = sorted(p for p in anteriores.iterdir() if p.is_dir()) if anteriores.exists() else []
+    # Los retirados por una vuelta atrás no cuentan: si no, la segunda vuelta restauraría el que se acaba de retirar
+    previos = (sorted(p for p in anteriores.iterdir() if p.is_dir() and not p.name.endswith("_retirado"))
+               if anteriores.exists() else [])
     if not previos:
         raise RuntimeError("no hay ningún modelo anterior al que volver")
     restaurar = previos[-1]
@@ -156,8 +168,14 @@ def comprobar_dia(tabla, dia, series_esperadas):
     series = tabla.groupby(CLAVE).ngroups
     if series != series_esperadas:
         raise EntradaIncorrecta(f"llegan {series} series y se esperan {series_esperadas}")
+    huecos = tabla[(tabla["date"] < dia) & tabla[OBJETIVO].isna()]
+    if len(huecos):
+        raise EntradaIncorrecta(f"faltan {len(huecos)} ventas anteriores al {dia}, la primera el "
+                                f"{huecos['date'].min()}")
     conocidas = tabla[tabla[OBJETIVO].notna()]
     ultimo = conocidas.groupby(CLAVE)["date"].max()
+    if len(ultimo) != series_esperadas:
+        raise EntradaIncorrecta(f"solo {len(ultimo)} series traen ventas y se esperan {series_esperadas}")
     if (ultimo != vispera).any():
         raise EntradaIncorrecta(f"la última venta conocida no es la de la víspera ({vispera}) en todas las series: "
                                 f"{sorted(set(ultimo))}")

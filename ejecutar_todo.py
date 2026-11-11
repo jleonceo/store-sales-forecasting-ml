@@ -18,7 +18,7 @@ from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parent
 UNITARIAS = ["tests/probar_sin_origen.py", "tests/probar_datos.py", "tests/probar_variables.py",
-             "tests/probar_produccion.py", "tests/probar_evaluar.py"]
+             "tests/probar_modelo.py", "tests/probar_produccion.py", "tests/probar_evaluar.py"]
 DE_RESULTADOS = ["tests/probar_resultados.py", "tests/probar_portada.py"]
 
 

@@ -1,8 +1,8 @@
 {
   "dia": "2015-12-30",
-  "momento": "2026-11-11T18:50:28",
+  "momento": "2026-11-11T22:25:00",
   "estado": "OK",
-  "duracion_s": 2.05,
+  "duracion_s": 1.97,
   "filas_entrada": 21860,
   "huella_entrada": "5d20f4e6c6b94e536578ef34b36f81612cd752cd0654fdcbbcc03bd63d603f99",
   "series": 20,
@@ -12,6 +12,6 @@
   "aviso": "la base solo trae calendario y precio de 2 de los 8 días",
   "modelo": {
     "entrenado_hasta": "2015-11-30",
-    "fecha": "2026-11-11T18:46:46"
+    "fecha": "2026-11-11T22:21:33"
   }
 }

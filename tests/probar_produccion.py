@@ -3,6 +3,7 @@ que los modelos no se cargan con otras versiones."""
 
 import json
 import tempfile
+import time
 from pathlib import Path
 
 import numpy as np
@@ -113,14 +114,51 @@ def caso_el_dia_para_sin_calendario_del_propio_dia():
     esperar_error(lambda: comprobar_dia(t, "2015-12-20", 2), EntradaIncorrecta)
 
 
+def caso_el_dia_para_si_falta_una_venta_a_mitad():
+    t = dos_series_hasta("2015-12-20")
+    t.loc[(t["item_id"] == "y") & (t["date"] == "2015-12-17"), "unidades"] = np.nan
+    esperar_error(lambda: comprobar_dia(t, "2015-12-20", 2), EntradaIncorrecta)
+
+
+def caso_el_dia_para_si_una_serie_no_trae_ninguna_venta():
+    t = dos_series_hasta("2015-12-20")
+    t.loc[t["item_id"] == "y", "unidades"] = np.nan
+    esperar_error(lambda: comprobar_dia(t, "2015-12-20", 2), EntradaIncorrecta)
+
+
 def con_config(funcion):
     with tempfile.TemporaryDirectory() as d:
-        c = {"modelos": Path(d), "reentreno": {"tolerancia": 0.05}}
+        c = {"modelos": Path(d), "reentreno": {"tolerancia": 0.01}}
         return funcion(c)
 
 
-def guardar_con_error(c, carpeta, error):
-    guardar_modelos(modelos(), {"A · x": {"error": error}}, "2015-11-30", {}, carpeta)
+def guardar_con_error(c, carpeta, error, referencia=10.0, hasta="2015-11-30"):
+    guardar_modelos(modelos(), {"A · x": {"error": error, "referencia": referencia}}, hasta, {}, carpeta)
+
+
+def caso_se_compara_el_error_frente_a_la_regla_de_cada_ventana():
+    # El vigente se validó en días fáciles (5 frente a 10 de la regla) y el candidato en días difíciles (6 frente a
+    # 15): en unidades parece peor, pero frente a la regla de sus propios días es mejor
+    def f(c):
+        vigente, candidato, _ = carpetas_modelos(c)
+        guardar_con_error(c, vigente, 5.0, 10.0)
+        guardar_con_error(c, candidato, 6.0, 15.0, "2015-12-31")
+        assert promover(c)["promovido"]
+    con_config(f)
+
+
+def caso_dos_vueltas_atras_no_restauran_el_retirado():
+    def f(c):
+        vigente, candidato, anteriores = carpetas_modelos(c)
+        for error in [5.0, 4.0, 3.0]:
+            guardar_con_error(c, candidato, error)
+            promover(c)
+            time.sleep(1.1)
+        volver_atras(c)
+        time.sleep(1.1)
+        volver_atras(c)
+        assert json.loads((vigente / "manifiesto.json").read_text())["error_validacion"] == 5.0
+    con_config(f)
 
 
 def caso_un_candidato_peor_no_sustituye_al_vigente():
@@ -160,6 +198,8 @@ def caso_una_manana_repetida_archiva_la_anterior():
 if __name__ == "__main__":
     lanzar([caso_el_dia_correcto_pasa, caso_el_dia_para_si_falta_una_serie,
             caso_el_dia_para_si_la_ultima_venta_es_de_anteayer, caso_el_dia_para_sin_calendario_del_propio_dia,
+            caso_el_dia_para_si_falta_una_venta_a_mitad, caso_el_dia_para_si_una_serie_no_trae_ninguna_venta,
+            caso_se_compara_el_error_frente_a_la_regla_de_cada_ventana, caso_dos_vueltas_atras_no_restauran_el_retirado,
             caso_un_candidato_peor_no_sustituye_al_vigente,
             caso_un_candidato_igual_o_mejor_sustituye_y_se_puede_volver_atras,
             caso_una_manana_repetida_archiva_la_anterior,caso_la_prevision_no_ve_las_ventas_del_futuro, caso_la_prevision_es_recursiva,

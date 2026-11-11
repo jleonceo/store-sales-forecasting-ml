@@ -1,8 +1,8 @@
 {
   "dia": "2015-12-05",
-  "momento": "2026-11-11T18:47:22",
+  "momento": "2026-11-11T22:22:05",
   "estado": "OK",
-  "duracion_s": 9.51,
+  "duracion_s": 7.59,
   "filas_entrada": 21360,
   "huella_entrada": "8ca891d1337f11e6a7839926a71d1f24ae9cf1b5946c67cf3de1358e0857b44d",
   "series": 20,
@@ -12,6 +12,6 @@
   "aviso": null,
   "modelo": {
     "entrenado_hasta": "2015-11-30",
-    "fecha": "2026-11-11T18:46:46"
+    "fecha": "2026-11-11T22:21:33"
   }
 }

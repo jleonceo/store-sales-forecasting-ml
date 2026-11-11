@@ -18,7 +18,7 @@ Todo vive en `produccion/` y se apoya en el paquete `src/forecast/`. Las rutas, 
 
 `prever.py --dia 2015-12-24` reproduce lo que se sabría esa mañana. Antes de nada borra las ventas del día 24 en adelante, de modo que el proceso no puede usar una venta que todavía no existe. Después hace cuatro cosas:
 
-1. **Comprueba los datos del día** contra el [contrato de entrada](../produccion/contrato_entrada.md): están las 20 series, todas traen la venta de la víspera y llegan el calendario y el precio del propio día. Si algo falla, para sin dejar previsión, anota el motivo en el registro de ejecuciones y termina con error.
+1. **Comprueba los datos del día** contra el [contrato de entrada](../produccion/contrato_entrada.md): están las 20 series, ninguna tiene una venta vacía antes del día, todas traen la venta de la víspera y llegan el calendario y el precio del propio día. Si algo falla, para sin dejar previsión, anota el motivo en el registro de ejecuciones y termina con error.
 2. **Carga los modelos en uso.** Si la versión de scikit-learn o de pandas no es la del entrenamiento, para y pide reentrenar.
 3. **Prevé los 8 días** de forma recursiva y escribe `produccion/salidas/<día>/prevision.csv`, con una fila por serie y día.
 4. **Deja constancia.** `resumen.json` guarda las filas de entrada, la huella de esos datos, el modelo usado, la duración y el estado. `ejecuciones.csv` añade una fila por ejecución, haya ido bien o mal.
@@ -33,14 +33,14 @@ Si una mañana se ejecuta dos veces, la carpeta anterior se archiva antes de esc
 
 Reentrenar no pisa el modelo en uso. `reentrenar.py` entrena en una carpeta de candidato y compara su error de validación con el del modelo vigente:
 
-- Si el candidato no valida peor, con una tolerancia de 0,05 unidades, pasa a vigente y el anterior se guarda en `modelos/anteriores/`.
+- Si el candidato no valida peor, pasa a vigente y el anterior se guarda en `modelos/anteriores/`. Cada modelo se valida en sus últimos días de entrenamiento, que cambian de un reentreno a otro, así que la comparación divide cada error por el de la regla en esos mismos días: lo que se compara es cuánto mejora cada modelo a la regla, con una tolerancia de 0,01.
 - Si valida peor, el vigente sigue en uso y el candidato se queda aparte para revisarlo.
 
 Cada modelo guardado lleva un manifiesto con la fecha hasta la que se entrenó, las versiones de las librerías, la huella de las dos bases y la validación de cada serie. La carpeta `modelos/` no se sube al repositorio: se regenera al reentrenar.
 
 ## Vuelta atrás
 
-`python produccion/volver_atras.py` restaura como vigente el último modelo de `modelos/anteriores/`. El que se retira tampoco se borra. El código se vuelve atrás con git, a la versión etiquetada que se quiera recuperar.
+`python produccion/volver_atras.py` restaura como vigente el último modelo de `modelos/anteriores/`. El que se retira tampoco se borra: se guarda con la marca `_retirado` y no cuenta en la siguiente vuelta atrás, que restaura el modelo anterior a ese. El código se vuelve atrás con git, a la versión etiquetada que se quiera recuperar.
 
 ## Avisos
 
@@ -54,7 +54,7 @@ Cada modelo guardado lleva un manifiesto con la fecha hasta la que se entrenó, 
 El informe del despliegue recoge tres comprobaciones de principio a fin:
 
 - **No falta ninguna mañana.** De las 31 esperadas se hicieron 31. Suman 4.400 previsiones, todas medidas.
-- **La mañana del 24/12 reproduce la prueba final.** Da 10,01 frente a 10,05 de la referencia, las mismas cifras que la evaluación del modelo. El proceso por lotes y la evaluación llegan al mismo resultado por dos caminos.
+- **La mañana del 24/12 da las cifras esperadas.** Da 9,61 frente a 10,05 de la referencia, las mismas que guarda `tests/cifras_de_referencia.json`, recalculadas aparte desde las bases sin el paquete del repositorio.
 - **Un día nuevo cambia la previsión.** Entre la mañana del 23 y la del 24 hay 140 previsiones para los mismos días. De ellas, 98 cambian al conocerse la venta del 23.
 
 Desde el 25/12 la base ya no trae calendario ni precio para los 8 días completos, porque los datos acaban el 31/12. El proceso prevé los días que hay, de 7 a 1, y lo anota como aviso en el resumen de esa mañana.

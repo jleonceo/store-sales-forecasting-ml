@@ -11,30 +11,30 @@ Con mejor previsión hay menos almacén lleno, menos dinero parado en mercancía
 
 ## En cifras
 
-En la prueba final, con diciembre de 2015 reservado desde el principio y sin usarlo nunca para entrenar, el modelo se equivoca de media en **5,20 unidades** al prever el día siguiente. Repetir lo vendido el mismo día de la semana anterior, que es lo que haría un responsable de compras sin un modelo, se equivoca en 9,10. El modelo lo hace mejor en 13 de las 20 combinaciones de producto y tienda.
+En diciembre de 2015, un mes reservado desde el principio y nunca usado para entrenar, el modelo se equivoca de media en **7,45 unidades** al prever el día siguiente, mañana a mañana durante las 31 del mes. Repetir lo vendido el mismo día de la semana anterior, que es lo que haría un responsable de compras sin un modelo, se equivoca en 10,43. El modelo lo hace mejor en 20 de las 31 mañanas.
 
 | Medida | Modelo | Repetir la semana anterior |
 |---|---|---|
-| Día siguiente, 20 productos y tiendas (prueba final, 16/12/2015) | **5,20** uds. | 9,10 uds. |
-| Ocho días por delante, total de las dos tiendas (prueba final, 24 al 31/12/2015) | **114,50** uds./día | 123,25 uds./día |
-| Ocho días por delante, repetido desde 12 fechas de 2015, por producto y día | **9,19** uds. | 10,68 uds. |
-| Validación del día siguiente (noviembre de 2015, 3 tramos de 8 días) | **7,58** uds. | 10,09 uds. |
+| Día siguiente, las 31 mañanas de diciembre de 2015 | **7,45** uds. | 10,43 uds. |
+| Ocho días por delante, repetido desde 12 fechas de 2015, por producto y día | **8,87** uds. | 10,68 uds. |
+| Ocho días por delante, total de las dos tiendas (24 al 31/12/2015) | **112,75** uds./día | 123,25 uds./día |
+| Validación del día siguiente (noviembre de 2015, 3 tramos de 8 días) | **7,46** uds. | 10,09 uds. |
 
 Todas las cifras son error absoluto medio en unidades: cuánto se desvía de media la previsión de la venta real.
 
 ![Venta real, modelo y regla en el total de las dos tiendas, del 24 al 31 de diciembre de 2015](docs/graficos/01_total_dos_tiendas.png)
 
-En la semana de Navidad, con el total de las dos tiendas, el error del modelo es un 7 % menor que el de repetir la semana anterior.
+En la semana de Navidad, con el total de las dos tiendas, el error del modelo es un 9 % menor que el de repetir la semana anterior.
 
 ![Error medio por día de horizonte, desde 12 fechas de 2015](docs/graficos/02_error_por_horizonte.png)
 
-En cada una de las 12 fechas de 2015 se entrena el modelo solo con lo vendido hasta ese día y se prevén los 8 días siguientes. El modelo se equivoca menos en cada uno de los 8 días y en 153 de las 240 previsiones.
+En cada una de las 12 fechas de 2015 se entrena el modelo solo con lo vendido hasta ese día y se prevén los 8 días siguientes. El error baja un 17 % frente a la semana anterior, y el modelo se equivoca menos en cada uno de los 8 días y en 160 de las 240 previsiones. También gana a dos reglas más difíciles de batir: la media de los 7 últimos días (9,67) y la media del mismo día en las 4 semanas anteriores (10,10).
 
-Antes de fijar el modelo, esa misma prueba se repitió con nueve configuraciones, cada una con dos formas de redondear la previsión: valores por defecto, búsqueda de hiperparámetros, una competición entre seis algoritmos y dos correcciones de los datos. Todas mejoraron a la semana anterior, y la búsqueda de hiperparámetros por serie fue el cambio que más bajó el error. Las cifras están en el [documento del experimento](docs/05_experimento.md) y los resultados completos, en [`informes/experimento.json`](informes/experimento.json).
+Antes de fijar el modelo, esa misma prueba se repitió con nueve configuraciones: valores por defecto, búsqueda de hiperparámetros, una competición entre seis algoritmos y dos correcciones de los datos. En 2015 la búsqueda de hiperparámetros por serie fue el cambio que más bajó el error; en diciembre esa ventaja no se confirmó. Las cifras están en el [documento del experimento](docs/05_experimento.md) y los resultados completos, en [`informes/experimento.json`](informes/experimento.json).
 
 ![Error de cada una de las 20 series en la validación de noviembre de 2015](docs/graficos/03_error_por_producto.png)
 
-En la validación de noviembre, prediciendo el día siguiente, el modelo se equivoca menos en 19 de las 20 combinaciones.
+En la validación de noviembre, prediciendo el día siguiente, el modelo se equivoca menos en 20 de las 20 combinaciones.
 
 ## Cómo funciona
 
@@ -54,14 +54,14 @@ En la validación de noviembre, prediciendo el día siguiente, el modelo se equi
 
 ## Simulación de producción
 
-El proyecto incluye el proceso por lotes que se ejecutaría cada mañana. Revisa los datos recibidos, prevé los 8 días siguientes con las ventas hasta el día anterior y, cuando se conoce la venta real, mide cuánto se ha equivocado. Al reentrenar se prepara un modelo nuevo, que solo sustituye al actual si no da peores resultados en la validación, y el anterior se puede recuperar con un comando.
+El proyecto incluye el proceso por lotes que se ejecutaría cada mañana. Revisa los datos recibidos, prevé los 8 días siguientes con las ventas hasta el día anterior y, cuando se conoce la venta real, mide cuánto se ha equivocado. Al reentrenar se prepara un modelo nuevo, que solo sustituye al actual si, frente a la regla, valida al menos igual de bien, y el anterior se puede recuperar con un comando.
 
 Un flujo de GitHub Actions ejecuta ese proceso para las 31 mañanas de diciembre de 2015, una tras otra. Diciembre ya se usó en la prueba final, así que la simulación comprueba que el proceso funciona día a día; no es una prueba nueva del modelo.
 
 Para comprobar el despliegue:
 
 - El historial de la pestaña [Actions](https://github.com/jleonceo/store-sales-forecasting-ml/actions) guarda cada ejecución del flujo `produccion`, con su fecha, el registro de las 31 mañanas y los resultados para descargar. La primera, del 11/11/2026, está [aquí](https://github.com/jleonceo/store-sales-forecasting-ml/actions/runs/43074677107).
-- [`informes/despliegue.json`](informes/despliegue.json) resume la última ejecución: las 31 mañanas previstas y las hechas, el modelo en uso y la comprobación de que el 24/12 da las mismas cifras que la prueba final.
+- [`informes/despliegue.json`](informes/despliegue.json) resume la última ejecución del proceso en este repositorio: las 31 mañanas previstas y las hechas, el modelo en uso y la comprobación de que el 24/12 da las cifras esperadas.
 - [`produccion/salidas/`](produccion/salidas/) contiene la previsión y la evaluación de cada mañana, para verlas sin descargar nada.
 
 ## Cómo reproducirlo
@@ -79,18 +79,22 @@ Para ejecutar la producción en GitHub: pestaña **Actions**, flujo **produccion
 
 ## Documentación
 
-- [Datos y calidad](docs/01_datos_y_calidad.md): qué traen los datos y qué se hizo con cada problema.
-- [Variables](docs/02_variables.md): qué datos usa el modelo de cada día y por qué ninguno incluye información posterior.
-- [Modelo y validación](docs/03_modelo_y_validacion.md): el algoritmo, cómo se eligieron sus ajustes y las tres formas de medir.
-- [Evaluación](docs/04_evaluacion.md): los resultados por día previsto, por producto y tienda y por nivel de agrupación.
-- [Experimento](docs/05_experimento.md): las alternativas que se midieron antes de fijar el modelo.
-- [Producción](docs/06_produccion.md): el proceso diario, el reentrenamiento, los avisos y cómo volver al modelo anterior.
-- [Ficha del modelo](docs/ficha_del_modelo.md): para quien vaya a usarlo, con sus límites.
-- [Contrato de entrada](produccion/contrato_entrada.md): qué tiene que traer el fichero de cada día.
+El proyecto sigue las fases de CRISP-DM, y cada documento corresponde a una:
+
+| Fase | Documento |
+|---|---|
+| Comprensión del negocio | Esta portada: el problema y la regla con la que se compara |
+| Comprensión de los datos | [Datos y calidad](docs/01_datos_y_calidad.md): qué traen los datos y qué se hizo con cada problema |
+| Preparación de los datos | [Variables](docs/02_variables.md): qué datos usa el modelo de cada día y por qué ninguno incluye información posterior |
+| Modelado | [Modelo y validación](docs/03_modelo_y_validacion.md) y [Experimento](docs/05_experimento.md): el algoritmo, cómo se eligieron sus ajustes y las alternativas medidas |
+| Evaluación | [Evaluación](docs/04_evaluacion.md): los resultados por día previsto, por producto y tienda y por nivel de agrupación |
+| Despliegue | [Producción](docs/06_produccion.md), [Ficha del modelo](docs/ficha_del_modelo.md) y [Contrato de entrada](produccion/contrato_entrada.md): el proceso diario, el reentreno, la vuelta atrás y lo que necesita y entrega |
+
+Una revisión externa del código encontró errores en la primera versión; la evaluación llevó de vuelta a la preparación de los datos y al modelado, como prevé CRISP-DM. Lo que cambió está en [CHANGELOG.md](CHANGELOG.md).
 
 ## Límites y siguiente paso
 
-La prueba final cubre un solo mes: un día previsto con un día de antelación y una semana prevista con 8. En esa semana, producto a producto, el modelo queda igual que la regla (10,01 frente a 10,05); la ventaja se ve al sumar las dos tiendas y en la prueba desde 12 fechas. El código se ha probado con 20 series.
+La prueba final cubre un solo mes. En la semana de Navidad, producto a producto, el modelo queda algo por delante de la regla (9,61 frente a 10,05), pero la diferencia cabe en el azar; la ventaja clara se ve al sumar las dos tiendas, a un día vista y en la prueba desde 12 fechas. El modelo tiende a prever algo de más, y donde más se equivoca es en los días sin venta. El código se ha probado con 20 series.
 
 Para superar a la regla también producto a producto en semanas como la de Navidad haría falta el dato de inventario: saber si un día sin ventas fue porque nadie compró o porque no quedaba producto en el estante.
 

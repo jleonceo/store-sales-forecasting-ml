@@ -5,18 +5,18 @@
   "medidas": 160,
   "sin_medir": 0,
   "total": {
-    "error": 10.0125,
+    "error": 9.6125,
     "referencia": 10.05,
     "filas": 160
   },
   "por_dia": {
     "2015-12-24": {
-      "error": 6.6,
+      "error": 6.45,
       "referencia": 6.25,
       "filas": 20
     },
     "2015-12-25": {
-      "error": 22.1,
+      "error": 21.1,
       "referencia": 20.4,
       "filas": 20
     },
@@ -26,7 +26,7 @@
       "filas": 20
     },
     "2015-12-27": {
-      "error": 11.65,
+      "error": 10.0,
       "referencia": 8.9,
       "filas": 20
     },
@@ -36,119 +36,119 @@
       "filas": 20
     },
     "2015-12-29": {
-      "error": 8.0,
+      "error": 7.6,
       "referencia": 11.9,
       "filas": 20
     },
     "2015-12-30": {
-      "error": 7.25,
+      "error": 7.95,
       "referencia": 7.6,
       "filas": 20
     },
     "2015-12-31": {
-      "error": 9.1,
+      "error": 8.4,
       "referencia": 10.85,
       "filas": 20
     }
   },
   "por_serie": {
     "CA_3 · FOODS_3_090": {
-      "error": 11.5,
+      "error": 5.25,
       "referencia": 2.75,
       "filas": 8
     },
     "CA_3 · FOODS_3_120": {
-      "error": 28.875,
+      "error": 23.5,
       "referencia": 23.5,
       "filas": 8
     },
     "CA_3 · FOODS_3_202": {
-      "error": 9.375,
+      "error": 11.875,
       "referencia": 15.125,
       "filas": 8
     },
     "CA_3 · FOODS_3_252": {
-      "error": 11.875,
+      "error": 10.75,
       "referencia": 18.25,
       "filas": 8
     },
     "CA_3 · FOODS_3_288": {
-      "error": 9.375,
+      "error": 8.0,
       "referencia": 9.25,
       "filas": 8
     },
     "CA_3 · FOODS_3_329": {
-      "error": 12.25,
+      "error": 14.75,
       "referencia": 18.5,
       "filas": 8
     },
     "CA_3 · FOODS_3_555": {
-      "error": 11.5,
+      "error": 11.375,
       "referencia": 14.75,
       "filas": 8
     },
     "CA_3 · FOODS_3_586": {
-      "error": 25.125,
+      "error": 21.375,
       "referencia": 30.875,
       "filas": 8
     },
     "CA_3 · FOODS_3_587": {
-      "error": 9.0,
+      "error": 10.375,
       "referencia": 8.625,
       "filas": 8
     },
     "CA_3 · FOODS_3_714": {
-      "error": 8.75,
+      "error": 10.625,
       "referencia": 10.375,
       "filas": 8
     },
     "CA_4 · FOODS_3_090": {
-      "error": 24.125,
+      "error": 24.5,
       "referencia": 0.0,
       "filas": 8
     },
     "CA_4 · FOODS_3_120": {
-      "error": 5.125,
+      "error": 4.875,
       "referencia": 7.375,
       "filas": 8
     },
     "CA_4 · FOODS_3_202": {
-      "error": 5.625,
+      "error": 6.125,
       "referencia": 8.125,
       "filas": 8
     },
     "CA_4 · FOODS_3_252": {
-      "error": 3.25,
+      "error": 3.5,
       "referencia": 2.875,
       "filas": 8
     },
     "CA_4 · FOODS_3_288": {
-      "error": 4.375,
+      "error": 5.0,
       "referencia": 6.625,
       "filas": 8
     },
     "CA_4 · FOODS_3_329": {
-      "error": 3.75,
+      "error": 4.0,
       "referencia": 3.125,
       "filas": 8
     },
     "CA_4 · FOODS_3_555": {
-      "error": 2.25,
+      "error": 2.375,
       "referencia": 1.75,
       "filas": 8
     },
     "CA_4 · FOODS_3_586": {
-      "error": 4.25,
+      "error": 4.0,
       "referencia": 6.0,
       "filas": 8
     },
     "CA_4 · FOODS_3_587": {
-      "error": 4.5,
+      "error": 5.125,
       "referencia": 6.0,
       "filas": 8
     },
     "CA_4 · FOODS_3_714": {
-      "error": 5.375,
+      "error": 4.875,
       "referencia": 7.125,
       "filas": 8
     }
@@ -156,42 +156,42 @@
   "suma_por_dia": {
     "2015-12-24": {
       "real": 436,
-      "prevision": 400,
+      "prevision": 389,
       "referencia": 463
     },
     "2015-12-25": {
       "real": 1,
-      "prevision": 443,
+      "prevision": 423,
       "referencia": 409
     },
     "2015-12-26": {
       "real": 474,
-      "prevision": 543,
+      "prevision": 561,
       "referencia": 539
     },
     "2015-12-27": {
       "real": 465,
-      "prevision": 632,
+      "prevision": 611,
       "referencia": 623
     },
     "2015-12-28": {
       "real": 470,
-      "prevision": 469,
+      "prevision": 471,
       "referencia": 421
     },
     "2015-12-29": {
       "real": 363,
-      "prevision": 465,
+      "prevision": 461,
       "referencia": 531
     },
     "2015-12-30": {
       "real": 375,
-      "prevision": 434,
+      "prevision": 458,
       "referencia": 485
     },
     "2015-12-31": {
       "real": 464,
-      "prevision": 424,
+      "prevision": 446,
       "referencia": 463
     }
   }

@@ -4,27 +4,32 @@ hiperparámetros con validación temporal.
 Para cada serie, con los días hasta la fecha de entrenamiento:
 1. codifica el calendario: una columna por evento y, para el mes y el día de la semana, la media suavizada de las
    ventas de la serie en ese valor;
-2. ordena todas las variables por información mutua con las ventas y se queda con las 70 primeras;
-3. busca los hiperparámetros de un `HistGradientBoostingRegressor` con 10 candidatos y tres cortes temporales de 8
-   días, puntuando con el error absoluto medio, y reentrena el mejor con todos los días.
+2. se queda con las variables que un árbol puede usar: fuera las constantes y los eventos con menos días que la hoja
+   más pequeña de la rejilla; si quedaran más de 70, las ordenaría por información mutua y cortaría en 70;
+3. busca los hiperparámetros de un `HistGradientBoostingRegressor` con 10 candidatos sorteados más los valores por
+   defecto y tres cortes temporales de 8 días, puntuando con el error absoluto medio, y reentrena el mejor con todos
+   los días.
 """
 
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import HistGradientBoostingRegressor
 from sklearn.feature_selection import mutual_info_regression
-from sklearn.model_selection import RandomizedSearchCV, TimeSeriesSplit
+from sklearn.model_selection import GridSearchCV, ParameterSampler, TimeSeriesSplit
 
 from . import DIAS, OBJETIVO, SEMILLA
 
-# Calendario: qué columnas se codifican y cómo; el año y el tipo de evento no entran
+# Calendario: qué columnas se codifican y cómo. El año y el tipo de evento no entran, y `weekday` tampoco: es el
+# nombre del día y va uno a uno con `wday`, así que su media sería una copia de la de `wday`
 UNA_POR_VALOR = ["event_name_1"]
-MEDIA_POR_VALOR = ["month", "wday", "weekday"]
-NO_ENTRAN = ["year", "event_type_1"]
+MEDIA_POR_VALOR = ["month", "wday"]
+NO_ENTRAN = ["year", "event_type_1", "weekday"]
 NO_SON_VARIABLES = ["date", "store_id", "item_id", OBJETIVO, "sell_price_faltante", "serie"]
-# Media suavizada: peso de un valor con n días = 1 / (1 + e^(−(n − MIN_HOJA) / SUAVE))
-MIN_HOJA = 100
-SUAVE = 1.0
+# Media suavizada: peso de un valor con n días = 1 / (1 + e^(−(n − MIN_HOJA) / SUAVE)). Son los valores por defecto
+# de hoy del TargetEncoder de category-encoders. Con 100 días, el valor anterior, ningún mes llegaba a pesar porque
+# cada serie tiene como mucho 93 días de un mismo mes, y la media del mes salía casi constante.
+MIN_HOJA = 20
+SUAVE = 10.0
 
 N_VARIABLES = 70
 CORTES = 3
@@ -73,16 +78,41 @@ def aplicar_codificadores(t, cod, columnas):
     return pd.concat(partes + [t[resto]], axis=1)
 
 
+def variables_utiles(x):
+    """Las columnas que un árbol puede usar: fuera las constantes y las de 0 y 1 cuyo valor menos frecuente tiene
+    menos días que la hoja más pequeña de la rejilla, porque ningún corte por ellas deja una hoja válida."""
+    hoja = min(REJILLA["min_samples_leaf"])
+    salida = []
+    for c in x.columns:
+        cuenta = x[c].value_counts()
+        if len(cuenta) < 2:
+            continue
+        if len(cuenta) == 2 and cuenta.min() < hoja:
+            continue
+        salida.append(c)
+    return salida
+
+
 def ranking(nombres, importancias):
     """Variables de mayor a menor importancia, con los empates deshechos por nombre."""
     return [v for v, _ in sorted(zip(nombres, importancias), key=lambda x: (-x[1], x[0]))]
 
 
+def candidatos():
+    """Los candidatos de la búsqueda: 10 sorteados de la rejilla con la semilla y, además, los valores por defecto
+    del algoritmo, para que la búsqueda nunca pueda quedar peor que no buscar."""
+    defecto = HistGradientBoostingRegressor().get_params()
+    sorteados = list(ParameterSampler(REJILLA, CANDIDATOS, random_state=SEMILLA))
+    por_defecto = {k: defecto[k] for k in REJILLA}
+    return sorteados + ([por_defecto] if por_defecto not in sorteados else [])
+
+
 def validar_y_entrenar(x, y):
     """Búsqueda de hiperparámetros con cortes temporales; devuelve el modelo reentrenado y su validación."""
-    busqueda = RandomizedSearchCV(HistGradientBoostingRegressor(early_stopping=False, random_state=SEMILLA), REJILLA,
-                                  n_iter=CANDIDATOS, cv=TimeSeriesSplit(CORTES, test_size=DIAS),
-                                  scoring="neg_mean_absolute_error", random_state=SEMILLA, n_jobs=1).fit(x, y)
+    rejilla = [{k: [v] for k, v in c.items()} for c in candidatos()]
+    busqueda = GridSearchCV(HistGradientBoostingRegressor(early_stopping=False, random_state=SEMILLA), rejilla,
+                            cv=TimeSeriesSplit(CORTES, test_size=DIAS), scoring="neg_mean_absolute_error",
+                            n_jobs=1).fit(x, y)
     mejor = busqueda.best_index_
     errores = [float(-busqueda.cv_results_[f"split{k}_test_score"][mejor]) for k in range(CORTES)]
     prueba = np.concatenate([p for _, p in TimeSeriesSplit(CORTES, test_size=DIAS).split(np.arange(len(y)))])
@@ -103,10 +133,11 @@ def entrenar(trans, hasta, aviso=None):
     for s, t in trans[trans["date"] <= hasta].groupby("serie", sort=True):
         cod = ajustar_codificadores(t)
         x_todas = aplicar_codificadores(t, cod, columnas)
-        orden = ranking(list(x_todas.columns), mutual_info_regression(x_todas, t[OBJETIVO], random_state=SEMILLA))
-        if len(orden) < N_VARIABLES:
-            raise ValueError(f"{s}: solo hay {len(orden)} variables y se eligen {N_VARIABLES}")
-        x = x_todas[orden[:N_VARIABLES]]
+        x = x_todas[variables_utiles(x_todas)]
+        # La información mutua solo corta si quedan más de 70; con estos datos quedan menos y entran todas
+        if x.shape[1] > N_VARIABLES:
+            orden = ranking(list(x.columns), mutual_info_regression(x, t[OBJETIVO], random_state=SEMILLA))
+            x = x[orden[:N_VARIABLES]]
         modelo, val = validar_y_entrenar(x, t[OBJETIVO].astype(float))
         modelos[s], validacion[s] = (modelo, cod, columnas), val
         if aviso:

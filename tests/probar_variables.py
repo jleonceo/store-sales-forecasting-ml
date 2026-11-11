@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 from comun import lanzar
 
+from forecast.modelo import ajustar_codificadores
 from forecast.variables import generar_variables, marcar_rotura, transformar
 
 
@@ -52,7 +53,18 @@ def caso_salen_las_filas_sin_15_dias_de_historia():
     assert quitadas == 30 and len(t) == 10
 
 
+def caso_la_media_del_mes_distingue_los_meses():
+    # Dos años de una serie que vende 10 en enero y 100 en julio: cada mes tiene 62 días, menos que los 100 que pedía
+    # el suavizado de la versión anterior, y con aquel valor las dos medias salían casi iguales a la media general.
+    fechas = pd.date_range("2013-01-01", "2014-12-31", freq="D")
+    t = pd.DataFrame({"date": fechas.strftime("%Y-%m-%d"), "month": fechas.month, "wday": fechas.dayofweek,
+                      "weekday": fechas.day_name(), "event_name_1": None})
+    t["unidades"] = np.where(t["month"] == 1, 10.0, np.where(t["month"] == 7, 100.0, 50.0))
+    media = ajustar_codificadores(t)["media"]["month"]["media"]
+    assert media["7"] - media["1"] > 80, f"enero {media['1']:.2f}, julio {media['7']:.2f}"
+
+
 if __name__ == "__main__":
     lanzar([caso_el_retardo_de_un_dia_es_la_venta_de_ayer, caso_ninguna_variable_mira_el_propio_dia,
             caso_un_retardo_no_cruza_de_serie, caso_la_marca_de_rotura_cuenta_dias_seguidos_a_cero,
-            caso_salen_las_filas_sin_15_dias_de_historia])
+            caso_salen_las_filas_sin_15_dias_de_historia, caso_la_media_del_mes_distingue_los_meses])

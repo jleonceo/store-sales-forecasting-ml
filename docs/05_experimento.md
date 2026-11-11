@@ -12,12 +12,12 @@ Todas las configuraciones se compararon con la misma medida: el error absoluto m
 
 ## Qué se probó
 
-- **Hiperparámetros por defecto.** El punto de partida.
-- **Búsqueda de hiperparámetros por serie.** 10 combinaciones de una rejilla, con validación temporal.
-- **Competición entre seis algoritmos.** Regresión lineal, ridge, lasso, elastic net, bosque aleatorio y boosting, cada uno con su búsqueda, eligiendo el mejor de cada serie.
-- **Sin los días anteriores a la primera venta.** Entrenar cada serie desde que el producto empieza a venderse.
-- **Con una marca del verano de 2013.** Una variable que señala de julio a septiembre de 2013, cuando las ventas dan un salto.
-- **Las combinaciones** de las dos últimas entre sí y con la búsqueda.
+- Hiperparámetros por defecto, como punto de partida.
+- Búsqueda de hiperparámetros por serie: 10 combinaciones de una rejilla, con validación temporal.
+- Competición entre seis algoritmos (regresión lineal, ridge, lasso, elastic net, bosque aleatorio y boosting), cada uno con su búsqueda, eligiendo el mejor de cada serie.
+- Sin los días anteriores a la primera venta: entrenar cada serie desde que el producto empieza a venderse.
+- Con una marca del verano de 2013, una variable que señala de julio a septiembre de 2013, cuando las ventas dan un salto.
+- Las combinaciones de las dos últimas entre sí y con la búsqueda.
 
 Cada configuración se midió además con dos formas de pasar la previsión a unidades enteras: quitar los decimales o redondear.
 

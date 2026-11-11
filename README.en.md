@@ -30,6 +30,8 @@ In Christmas week, for both stores combined, the model's error is 7 % lower than
 
 The test from 12 dates repeats the whole process at each one: it trains on sales up to that day and forecasts the following 8. The model beats the rule on all 8 days of the horizon and in 153 of the 240 eight-day forecasts.
 
+Before fixing the model, that same test was repeated with nine configurations, each with two ways of rounding the forecast: default values, a hyperparameter search, a competition between six algorithms and two data corrections. All of them beat last week's sales, and the per-series hyperparameter search was the change that lowered the error the most. The figures are in the [experiment document](docs/05_experimento.md) and the full results in [`informes/experimento.json`](informes/experimento.json).
+
 ![Error of each of the 20 series in the November 2015 validation](docs/graficos/03_error_por_producto.png)
 
 In the November validation, one day ahead, the model improves on the rule in 19 of the 20 series.

@@ -67,4 +67,4 @@ Repite la prueba desde 12 fechas con la configuración adoptada y deja `informes
 
 ## Fuente de las cifras
 
-Las cifras de la configuración adoptada (9,19, 10,68, el intervalo y los 153 de 240) están en `informes/backtest.json`. Las de las demás configuraciones, las de diciembre con cuatro orígenes y las de la validación con y sin ajuste proceden del informe del experimento, anterior a este repositorio.
+Las cifras de la configuración adoptada (9,19, 10,68, el intervalo y los 153 de 240) están en `informes/backtest.json`. Las de las dieciocho combinaciones (nueve configuraciones por dos formas de redondear), con su error por día de horizonte, las de diciembre con cuatro orígenes y las de la validación con y sin ajuste están en [`informes/experimento.json`](../informes/experimento.json), que guarda el resultado del experimento tal como se ejecutó antes de construir este repositorio.

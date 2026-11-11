@@ -30,6 +30,8 @@ En la semana de Navidad, con el total de las dos tiendas, el error del modelo es
 
 En cada una de las 12 fechas de 2015 se entrena el modelo solo con lo vendido hasta ese día y se prevén los 8 días siguientes. El modelo se equivoca menos en cada uno de los 8 días y en 153 de las 240 previsiones.
 
+Antes de fijar el modelo, esa misma prueba se repitió con nueve configuraciones, cada una con dos formas de redondear la previsión: valores por defecto, búsqueda de hiperparámetros, una competición entre seis algoritmos y dos correcciones de los datos. Todas mejoraron a la semana anterior, y la búsqueda de hiperparámetros por serie fue el cambio que más bajó el error. Las cifras están en el [documento del experimento](docs/05_experimento.md) y los resultados completos, en [`informes/experimento.json`](informes/experimento.json).
+
 ![Error de cada una de las 20 series en la validación de noviembre de 2015](docs/graficos/03_error_por_producto.png)
 
 En la validación de noviembre, prediciendo el día siguiente, el modelo se equivoca menos en 19 de las 20 combinaciones.

@@ -42,7 +42,7 @@ El sesgo medio es de 1,22 unidades por serie y día: el modelo tiende a prever a
 
 A un día vista, el modelo mejora la regla en las 20 series. La más ajustada es `CA_3 · FOODS_3_586` (12,61 frente a 12,75). La serie con más venta, `CA_3 · FOODS_3_090`, es la de mayor mejora en unidades: 29,51 frente a 44,96.
 
-## Diciembre, mañana a mañana
+## Las 31 mañanas de diciembre
 
 La simulación de producción prevé cada mañana de diciembre de 2015 con los modelos entrenados hasta el 30/11. A un día vista, en las 31 mañanas, el modelo se equivoca 7,45 unidades frente a 10,43 de la regla y gana en 20 de 31.
 

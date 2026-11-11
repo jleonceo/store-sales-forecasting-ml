@@ -60,7 +60,7 @@ A GitHub Actions workflow runs that process over the 31 mornings of December 201
 
 To see the deployment evidence:
 
-- The [Actions](https://github.com/jleonceo/store-sales-forecasting-ml/actions) tab keeps every run of the `produccion` workflow, with its date, the log of the 31 mornings as the run summary and the outputs as a downloadable artifact.
+- The [Actions](https://github.com/jleonceo/store-sales-forecasting-ml/actions) tab keeps every run of the `produccion` workflow, with its date, the log of the 31 mornings as the run summary and the outputs as a downloadable artifact. The first one, from 11 November 2026, is [here](https://github.com/jleonceo/store-sales-forecasting-ml/actions/runs/43074677107).
 - [`informes/despliegue.json`](informes/despliegue.json) records the latest run: the 31 mornings expected and completed, the model in use and the check that the morning of 24 December reproduces the final test figures.
 - [`produccion/salidas/`](produccion/salidas/) holds the forecast and the evaluation of each morning, so they can be read without downloading anything.
 

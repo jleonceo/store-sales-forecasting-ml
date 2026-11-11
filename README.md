@@ -58,7 +58,7 @@ Un flujo de GitHub Actions ejecuta ese proceso para las 31 mañanas de diciembre
 
 Para comprobar el despliegue:
 
-- El historial de la pestaña [Actions](https://github.com/jleonceo/store-sales-forecasting-ml/actions) guarda cada ejecución del flujo `produccion`, con su fecha, el registro de las 31 mañanas y los resultados para descargar.
+- El historial de la pestaña [Actions](https://github.com/jleonceo/store-sales-forecasting-ml/actions) guarda cada ejecución del flujo `produccion`, con su fecha, el registro de las 31 mañanas y los resultados para descargar. La primera, del 11/11/2026, está [aquí](https://github.com/jleonceo/store-sales-forecasting-ml/actions/runs/43074677107).
 - [`informes/despliegue.json`](informes/despliegue.json) resume la última ejecución: las 31 mañanas previstas y las hechas, el modelo en uso y la comprobación de que el 24/12 da las mismas cifras que la prueba final.
 - [`produccion/salidas/`](produccion/salidas/) contiene la previsión y la evaluación de cada mañana, para verlas sin descargar nada.
 

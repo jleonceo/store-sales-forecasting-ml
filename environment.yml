@@ -1,0 +1,9 @@
+# Entorno del proyecto. Se crea con: conda env create -f environment.yml
+name: store-sales-forecasting-ml
+channels:
+  - conda-forge
+dependencies:
+  - python=3.13
+  - pip
+  - pip:
+      - -r requirements.txt

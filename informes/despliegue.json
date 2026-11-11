@@ -1,0 +1,54 @@
+{
+  "forma": "proceso por lotes",
+  "configuracion": "produccion/config.json",
+  "programacion": "GitHub Actions: flujo produccion.yml, lanzado a mano (Run workflow) o al cambiar el código de producción",
+  "avisos": {
+    "por_error": "el flujo falla y GitHub avisa por correo a quien lo lanzó",
+    "por_ausencia": "si faltan ejecuciones de la ventana, la simulación termina con error y el flujo también"
+  },
+  "vuelta_atras": {
+    "modelo": "python produccion/volver_atras.py",
+    "codigo": "git checkout <etiqueta>"
+  },
+  "reentreno": {
+    "promovido": true,
+    "nuevo": 7.584985068569635,
+    "vigente": 7.584985068569635,
+    "motivo": "el candidato no valida peor que el vigente",
+    "entrenado_hasta": "2015-11-30"
+  },
+  "modelo_en_uso": {
+    "entrenado_hasta": "2015-11-30",
+    "fecha": "2026-11-11T18:46:46",
+    "error_validacion": 7.584985068569635
+  },
+  "ventana": {
+    "desde": "2015-12-01",
+    "hasta": "2015-12-31",
+    "esperadas": 31,
+    "hechas": 31,
+    "faltan": []
+  },
+  "prueba_de_principio_a_fin": {
+    "datos": "diciembre de 2015, que no se usó para entrenar",
+    "control": {
+      "manana": "2015-12-24",
+      "error": 10.0125,
+      "referencia": 10.05,
+      "esperado": {
+        "error": 10.0125,
+        "referencia": 10.05
+      },
+      "coincide": true
+    },
+    "dia_nuevo_cambia_la_prevision": {
+      "entre": [
+        "2015-12-23",
+        "2015-12-24"
+      ],
+      "previsiones_comunes": 140,
+      "cambian": 98
+    },
+    "resultado": "OK"
+  }
+}

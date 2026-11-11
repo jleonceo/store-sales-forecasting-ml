@@ -1,0 +1,17 @@
+{
+  "dia": "2015-12-17",
+  "momento": "2026-11-11T18:48:59",
+  "estado": "OK",
+  "duracion_s": 8.21,
+  "filas_entrada": 21600,
+  "huella_entrada": "c4762cf00574dbe24181c075e81d92db64da217e92f7764421b1dfe69917df1e",
+  "series": 20,
+  "previsiones": 160,
+  "dias_previstos": 8,
+  "dias_pedidos": 8,
+  "aviso": null,
+  "modelo": {
+    "entrenado_hasta": "2015-11-30",
+    "fecha": "2026-11-11T18:46:46"
+  }
+}

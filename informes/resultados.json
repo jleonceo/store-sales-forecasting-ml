@@ -1,0 +1,296 @@
+{
+  "datos": {
+    "filas": 21280,
+    "unidades": 614451,
+    "series": 20,
+    "desde": "2013-01-01",
+    "hasta": "2015-11-30",
+    "precios_rellenados": 71,
+    "filas_sin_historia": 300,
+    "filas_modelado": 20980,
+    "dias_sin_ventas_sueltos": 1745,
+    "dias_fuera_de_la_tienda": 1259,
+    "diciembre_filas": 620,
+    "diciembre_unidades": 13551
+  },
+  "entrenado_hasta": "2015-11-30",
+  "validacion": {
+    "error": 7.584985068569634,
+    "referencia": 10.085416666666667,
+    "series_mejor": 19,
+    "series": 20
+  },
+  "un_dia": {
+    "dia": "2015-12-16",
+    "error": 5.2,
+    "referencia": 9.1,
+    "series_mejor": 13,
+    "series": 20
+  },
+  "ocho_dias": {
+    "dia": "2015-12-24",
+    "desde": "2015-12-24",
+    "hasta": "2015-12-31",
+    "error": 10.0125,
+    "referencia": 10.05,
+    "sesgo": 4.7625,
+    "series_mejor": 12,
+    "series": 20,
+    "total": {
+      "error": 114.5,
+      "referencia": 123.25
+    },
+    "por_tienda": {
+      "CA_3": {
+        "error": 85.875,
+        "referencia": 102.75
+      },
+      "CA_4": {
+        "error": 29.625,
+        "referencia": 28.75
+      }
+    },
+    "por_serie": {
+      "CA_3 · FOODS_3_090": {
+        "error": 11.5,
+        "referencia": 2.75
+      },
+      "CA_3 · FOODS_3_120": {
+        "error": 28.875,
+        "referencia": 23.5
+      },
+      "CA_3 · FOODS_3_202": {
+        "error": 9.375,
+        "referencia": 15.125
+      },
+      "CA_3 · FOODS_3_252": {
+        "error": 11.875,
+        "referencia": 18.25
+      },
+      "CA_3 · FOODS_3_288": {
+        "error": 9.375,
+        "referencia": 9.25
+      },
+      "CA_3 · FOODS_3_329": {
+        "error": 12.25,
+        "referencia": 18.5
+      },
+      "CA_3 · FOODS_3_555": {
+        "error": 11.5,
+        "referencia": 14.75
+      },
+      "CA_3 · FOODS_3_586": {
+        "error": 25.125,
+        "referencia": 30.875
+      },
+      "CA_3 · FOODS_3_587": {
+        "error": 9.0,
+        "referencia": 8.625
+      },
+      "CA_3 · FOODS_3_714": {
+        "error": 8.75,
+        "referencia": 10.375
+      },
+      "CA_4 · FOODS_3_090": {
+        "error": 24.125,
+        "referencia": 0.0
+      },
+      "CA_4 · FOODS_3_120": {
+        "error": 5.125,
+        "referencia": 7.375
+      },
+      "CA_4 · FOODS_3_202": {
+        "error": 5.625,
+        "referencia": 8.125
+      },
+      "CA_4 · FOODS_3_252": {
+        "error": 3.25,
+        "referencia": 2.875
+      },
+      "CA_4 · FOODS_3_288": {
+        "error": 4.375,
+        "referencia": 6.625
+      },
+      "CA_4 · FOODS_3_329": {
+        "error": 3.75,
+        "referencia": 3.125
+      },
+      "CA_4 · FOODS_3_555": {
+        "error": 2.25,
+        "referencia": 1.75
+      },
+      "CA_4 · FOODS_3_586": {
+        "error": 4.25,
+        "referencia": 6.0
+      },
+      "CA_4 · FOODS_3_587": {
+        "error": 4.5,
+        "referencia": 6.0
+      },
+      "CA_4 · FOODS_3_714": {
+        "error": 5.375,
+        "referencia": 7.125
+      }
+    },
+    "por_dia_total": {
+      "2015-12-24": {
+        "real": 436,
+        "prevision": 400,
+        "referencia": 463
+      },
+      "2015-12-25": {
+        "real": 1,
+        "prevision": 443,
+        "referencia": 409
+      },
+      "2015-12-26": {
+        "real": 474,
+        "prevision": 543,
+        "referencia": 539
+      },
+      "2015-12-27": {
+        "real": 465,
+        "prevision": 632,
+        "referencia": 623
+      },
+      "2015-12-28": {
+        "real": 470,
+        "prevision": 469,
+        "referencia": 421
+      },
+      "2015-12-29": {
+        "real": 363,
+        "prevision": 465,
+        "referencia": 531
+      },
+      "2015-12-30": {
+        "real": 375,
+        "prevision": 434,
+        "referencia": 485
+      },
+      "2015-12-31": {
+        "real": 464,
+        "prevision": 424,
+        "referencia": 463
+      }
+    }
+  },
+  "simulacion": {
+    "mananas": 31,
+    "mejor_que_referencia": 15,
+    "previsiones": 4400,
+    "medidas": 4400
+  },
+  "backtest": {
+    "origenes": [
+      "2015-01-18",
+      "2015-02-15",
+      "2015-03-15",
+      "2015-04-12",
+      "2015-05-10",
+      "2015-06-07",
+      "2015-07-05",
+      "2015-08-02",
+      "2015-08-30",
+      "2015-09-27",
+      "2015-10-25",
+      "2015-11-22"
+    ],
+    "dias": 8,
+    "semilla": 42,
+    "error": 9.188541666666667,
+    "referencia": 10.678125,
+    "sesgo": 1.2125,
+    "por_horizonte": {
+      "1": {
+        "error": 7.858333333333333,
+        "referencia": 9.8125
+      },
+      "2": {
+        "error": 7.333333333333333,
+        "referencia": 8.670833333333333
+      },
+      "3": {
+        "error": 8.416666666666666,
+        "referencia": 10.745833333333334
+      },
+      "4": {
+        "error": 9.295833333333333,
+        "referencia": 10.154166666666667
+      },
+      "5": {
+        "error": 9.2125,
+        "referencia": 11.1
+      },
+      "6": {
+        "error": 10.458333333333334,
+        "referencia": 10.8375
+      },
+      "7": {
+        "error": 10.95,
+        "referencia": 12.7625
+      },
+      "8": {
+        "error": 9.983333333333333,
+        "referencia": 11.341666666666667
+      }
+    },
+    "por_origen": {
+      "2015-01-18": {
+        "error": 6.05,
+        "referencia": 8.25625
+      },
+      "2015-02-15": {
+        "error": 6.60625,
+        "referencia": 10.04375
+      },
+      "2015-03-15": {
+        "error": 11.78125,
+        "referencia": 13.56875
+      },
+      "2015-04-12": {
+        "error": 7.2875,
+        "referencia": 9.3875
+      },
+      "2015-05-10": {
+        "error": 13.88125,
+        "referencia": 14.89375
+      },
+      "2015-06-07": {
+        "error": 11.28125,
+        "referencia": 11.66875
+      },
+      "2015-07-05": {
+        "error": 8.625,
+        "referencia": 13.31875
+      },
+      "2015-08-02": {
+        "error": 7.9125,
+        "referencia": 9.2375
+      },
+      "2015-08-30": {
+        "error": 8.3,
+        "referencia": 8.63125
+      },
+      "2015-09-27": {
+        "error": 8.275,
+        "referencia": 7.34375
+      },
+      "2015-10-25": {
+        "error": 8.4625,
+        "referencia": 8.325
+      },
+      "2015-11-22": {
+        "error": 11.8,
+        "referencia": 13.4625
+      }
+    },
+    "bloques_mejor": 153,
+    "bloques": 240,
+    "intervalo_diferencia": [
+      -2.081848958333333,
+      -0.9306510416666668
+    ],
+    "filas": 1920
+  }
+}

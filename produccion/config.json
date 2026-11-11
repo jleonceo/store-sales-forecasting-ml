@@ -1,0 +1,15 @@
+{
+  "_que_es": "Configuración del proceso por lotes. Es la única fuente de rutas y fechas: los scripts de produccion/ no llevan ninguna escrita. Las rutas son relativas a la raíz del repositorio.",
+  "datos_historia": "datos/ventas_2013_2015.db",
+  "datos_nuevos": "datos/diciembre_2015.db",
+  "modelos": "modelos",
+  "salidas": "produccion/salidas",
+  "informe_despliegue": "informes/despliegue.json",
+  "entrenar_hasta": "2015-11-30",
+  "dias_a_prever": 8,
+  "series_esperadas": 20,
+  "simulacion": {"desde": "2015-12-01", "hasta": "2015-12-31"},
+  "reentreno": {"criterio": "el modelo nuevo sustituye al vigente si su error de validación no es mayor que el del vigente más la tolerancia", "tolerancia": 0.05},
+  "programacion": "GitHub Actions: flujo produccion.yml, lanzado a mano (Run workflow) o al cambiar el código de producción",
+  "avisos": {"por_error": "el flujo falla y GitHub avisa por correo a quien lo lanzó", "por_ausencia": "si faltan ejecuciones de la ventana, la simulación termina con error y el flujo también"}
+}

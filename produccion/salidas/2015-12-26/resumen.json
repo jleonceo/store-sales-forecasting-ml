@@ -1,0 +1,17 @@
+{
+  "dia": "2015-12-26",
+  "momento": "2026-11-11T18:50:10",
+  "estado": "OK",
+  "duracion_s": 5.69,
+  "filas_entrada": 21780,
+  "huella_entrada": "370fa42558ea0265134a9378361b07ba40758da1e003f1e9f1e85d427dae536d",
+  "series": 20,
+  "previsiones": 120,
+  "dias_previstos": 6,
+  "dias_pedidos": 8,
+  "aviso": "la base solo trae calendario y precio de 6 de los 8 días",
+  "modelo": {
+    "entrenado_hasta": "2015-11-30",
+    "fecha": "2026-11-11T18:46:46"
+  }
+}

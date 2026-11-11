@@ -1,0 +1,9 @@
+# Se regeneran con produccion/reentrenar.py
+modelos/
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+# Entorno y credenciales
+.env
+.venv/

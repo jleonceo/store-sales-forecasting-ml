@@ -1,0 +1,198 @@
+{
+  "dia": "2015-12-14",
+  "origen": "2015-12-13",
+  "previsiones": 160,
+  "medidas": 160,
+  "sin_medir": 0,
+  "total": {
+    "error": 7.3375,
+    "referencia": 7.3125,
+    "filas": 160
+  },
+  "por_dia": {
+    "2015-12-14": {
+      "error": 6.0,
+      "referencia": 6.05,
+      "filas": 20
+    },
+    "2015-12-15": {
+      "error": 5.45,
+      "referencia": 7.4,
+      "filas": 20
+    },
+    "2015-12-16": {
+      "error": 6.6,
+      "referencia": 9.1,
+      "filas": 20
+    },
+    "2015-12-17": {
+      "error": 8.15,
+      "referencia": 7.25,
+      "filas": 20
+    },
+    "2015-12-18": {
+      "error": 7.5,
+      "referencia": 7.5,
+      "filas": 20
+    },
+    "2015-12-19": {
+      "error": 8.65,
+      "referencia": 9.5,
+      "filas": 20
+    },
+    "2015-12-20": {
+      "error": 10.7,
+      "referencia": 6.1,
+      "filas": 20
+    },
+    "2015-12-21": {
+      "error": 5.65,
+      "referencia": 5.6,
+      "filas": 20
+    }
+  },
+  "por_serie": {
+    "CA_3 · FOODS_3_090": {
+      "error": 11.875,
+      "referencia": 2.375,
+      "filas": 8
+    },
+    "CA_3 · FOODS_3_120": {
+      "error": 10.875,
+      "referencia": 10.75,
+      "filas": 8
+    },
+    "CA_3 · FOODS_3_202": {
+      "error": 7.375,
+      "referencia": 6.25,
+      "filas": 8
+    },
+    "CA_3 · FOODS_3_252": {
+      "error": 7.625,
+      "referencia": 9.75,
+      "filas": 8
+    },
+    "CA_3 · FOODS_3_288": {
+      "error": 7.25,
+      "referencia": 5.25,
+      "filas": 8
+    },
+    "CA_3 · FOODS_3_329": {
+      "error": 18.125,
+      "referencia": 46.0,
+      "filas": 8
+    },
+    "CA_3 · FOODS_3_555": {
+      "error": 6.0,
+      "referencia": 7.75,
+      "filas": 8
+    },
+    "CA_3 · FOODS_3_586": {
+      "error": 9.875,
+      "referencia": 9.5,
+      "filas": 8
+    },
+    "CA_3 · FOODS_3_587": {
+      "error": 5.375,
+      "referencia": 5.25,
+      "filas": 8
+    },
+    "CA_3 · FOODS_3_714": {
+      "error": 5.125,
+      "referencia": 6.75,
+      "filas": 8
+    },
+    "CA_4 · FOODS_3_090": {
+      "error": 26.625,
+      "referencia": 0.0,
+      "filas": 8
+    },
+    "CA_4 · FOODS_3_120": {
+      "error": 4.875,
+      "referencia": 7.375,
+      "filas": 8
+    },
+    "CA_4 · FOODS_3_202": {
+      "error": 1.875,
+      "referencia": 3.0,
+      "filas": 8
+    },
+    "CA_4 · FOODS_3_252": {
+      "error": 4.0,
+      "referencia": 2.25,
+      "filas": 8
+    },
+    "CA_4 · FOODS_3_288": {
+      "error": 2.875,
+      "referencia": 3.625,
+      "filas": 8
+    },
+    "CA_4 · FOODS_3_329": {
+      "error": 2.125,
+      "referencia": 4.75,
+      "filas": 8
+    },
+    "CA_4 · FOODS_3_555": {
+      "error": 1.25,
+      "referencia": 2.25,
+      "filas": 8
+    },
+    "CA_4 · FOODS_3_586": {
+      "error": 4.625,
+      "referencia": 4.25,
+      "filas": 8
+    },
+    "CA_4 · FOODS_3_587": {
+      "error": 6.25,
+      "referencia": 6.5,
+      "filas": 8
+    },
+    "CA_4 · FOODS_3_714": {
+      "error": 2.75,
+      "referencia": 2.625,
+      "filas": 8
+    }
+  },
+  "suma_por_dia": {
+    "2015-12-14": {
+      "real": 394,
+      "prevision": 422,
+      "referencia": 383
+    },
+    "2015-12-15": {
+      "real": 419,
+      "prevision": 412,
+      "referencia": 401
+    },
+    "2015-12-16": {
+      "real": 436,
+      "prevision": 402,
+      "referencia": 338
+    },
+    "2015-12-17": {
+      "real": 463,
+      "prevision": 430,
+      "referencia": 386
+    },
+    "2015-12-18": {
+      "real": 409,
+      "prevision": 461,
+      "referencia": 359
+    },
+    "2015-12-19": {
+      "real": 539,
+      "prevision": 566,
+      "referencia": 515
+    },
+    "2015-12-20": {
+      "real": 623,
+      "prevision": 607,
+      "referencia": 553
+    },
+    "2015-12-21": {
+      "real": 421,
+      "prevision": 438,
+      "referencia": 383
+    }
+  }
+}

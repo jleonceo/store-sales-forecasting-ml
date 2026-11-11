@@ -1,0 +1,43 @@
+name: produccion
+
+# El proceso por lotes ejecutado en los servidores de GitHub: reentrena y simula las 31 mañanas de diciembre de 2015.
+# Se lanza a mano desde la pestaña Actions o cuando cambia el código de producción.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["produccion/*.py", "src/**"]
+
+jobs:
+  simulacion:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+      - name: Instalar dependencias
+        run: pip install -r requirements.txt
+      - name: Reentrenar y ejecutar las 31 mañanas
+        run: python -W error produccion/simular_diciembre.py
+      - name: Resumen de la ejecución
+        run: |
+          echo "## Simulación de diciembre de 2015" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          python -c "
+          import csv
+          filas = list(csv.reader(open('produccion/salidas/registro.csv', encoding='utf-8')))
+          print('| ' + ' | '.join(filas[0]) + ' |')
+          print('|' + '---|' * len(filas[0]))
+          for f in filas[1:]:
+              print('| ' + ' | '.join(f) + ' |')
+          " >> "$GITHUB_STEP_SUMMARY"
+      - name: Guardar las salidas
+        uses: actions/upload-artifact@v4
+        with:
+          name: salidas-produccion
+          path: |
+            produccion/salidas/
+            modelos/vigente/manifiesto.json

@@ -1,0 +1,10 @@
+{
+  "_que_es": "Cifras esperadas, calculadas por una implementación independiente de la misma cadena antes de escribir la de este repositorio. probar_resultados.py compara con ellas lo que sale, con una tolerancia de 0,05 unidades.",
+  "datos": {"filas": 21280, "unidades": 614451, "precios_rellenados": 71, "filas_sin_historia": 300,
+            "filas_modelado": 20980, "dias_sin_ventas_sueltos": 1745, "dias_fuera_de_la_tienda": 1259},
+  "validacion": {"error": 7.584985068569635, "referencia": 10.085416666666669, "series_mejor": 19},
+  "un_dia": {"error": 5.2, "referencia": 9.1, "series_mejor": 13},
+  "ocho_dias": {"error": 10.0125, "referencia": 10.05, "series_mejor": 12,
+                "total": {"error": 114.5, "referencia": 123.25}},
+  "backtest": {"error": 9.188541666666667, "referencia": 10.678125, "bloques_mejor": 153, "bloques": 240}
+}

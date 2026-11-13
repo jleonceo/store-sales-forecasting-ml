@@ -40,6 +40,22 @@ The chart titles and labels are in Spanish; the model is shown in blue, the rule
 
 ## How it is built
 
+```mermaid
+flowchart TD
+    D[Kaggle M5 daily sales<br/>20 series, 2013 to 2015] --> V[Features from the series' own history<br/>past sales, averages, calendar and price]
+    V --> M[One model per product and store<br/>HistGradientBoosting]
+    M --> P[8-day forecast in a row<br/>each day feeds the next]
+    P --> T[Store totals<br/>adding up the products]
+    P --> E[Actual sales of the day]
+    E --> X[Error against repeating<br/>the previous week]
+    X --> R{Retraining}
+    R -->|Validates as well or better| N[New model in use]
+    R -->|Validates worse| A[Current model stays]
+    style R fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
+    style N fill:#e8f5e9,stroke:#2e7d32,color:#1b5e20
+```
+
+
 - Data: three years of daily sales (2013 to 2015) for 10 food products in 2 stores, 20 series in total, with calendar, events and weekly prices. The data is public, from the M5 competition on Kaggle (Walmart): [M5 Forecasting - Accuracy](https://www.kaggle.com/competitions/m5-forecasting-accuracy).
 - Model: one machine learning model per store and product (HistGradientBoosting, from scikit-learn). The features come from the series' own history: sales on previous days, rolling statistics, calendar and events, price and flags for runs of days without sales.
 - **How it is measured:** validation respects the order of time and hyperparameters were searched systematically. December 2015 was held out until the final test.

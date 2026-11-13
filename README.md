@@ -38,6 +38,22 @@ En la validación de noviembre, prediciendo el día siguiente, el modelo se equi
 
 ## Cómo funciona
 
+```mermaid
+flowchart TD
+    D[Ventas diarias de Kaggle M5<br/>20 series, 2013 a 2015] --> V[Variables del propio historial<br/>ventas anteriores, medias, calendario y precio]
+    V --> M[Un modelo por producto y tienda<br/>HistGradientBoosting]
+    M --> P[Previsión de 8 días seguidos<br/>cada día alimenta al siguiente]
+    P --> T[Totales por tienda<br/>sumando los productos]
+    P --> E[Venta real del día]
+    E --> X[Error frente a repetir<br/>la semana anterior]
+    X --> R{Reentreno}
+    R -->|Valida igual o mejor| N[Modelo nuevo en uso]
+    R -->|Valida peor| A[Se queda el actual]
+    style R fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
+    style N fill:#e8f5e9,stroke:#2e7d32,color:#1b5e20
+```
+
+
 - Datos: tres años de ventas diarias (2013 a 2015) de 10 productos de alimentación en 2 tiendas, 20 series en total, con calendario, eventos y precios semanales. Son datos públicos de la competición M5 de Kaggle (Walmart): [M5 Forecasting - Accuracy](https://www.kaggle.com/competitions/m5-forecasting-accuracy).
 - Modelo: un modelo de aprendizaje automático para cada producto y tienda (HistGradientBoosting, de scikit-learn). Las variables salen del propio historial: ventas de días anteriores, medias móviles, calendario y eventos, precio e indicadores de días seguidos sin ventas.
 - **Cómo se mide:** la validación respeta el orden del tiempo y los hiperparámetros se eligieron probando combinaciones de forma ordenada. Diciembre de 2015 quedó apartado hasta la prueba final.

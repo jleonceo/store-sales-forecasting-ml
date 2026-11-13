@@ -1,9 +1,9 @@
-[![pruebas](https://github.com/jleonceo/store-sales-forecasting-ml/actions/workflows/ci.yml/badge.svg)](https://github.com/jleonceo/store-sales-forecasting-ml/actions/workflows/ci.yml)
-[![produccion](https://github.com/jleonceo/store-sales-forecasting-ml/actions/workflows/produccion.yml/badge.svg)](https://github.com/jleonceo/store-sales-forecasting-ml/actions/workflows/produccion.yml)
-
 English version: [README.en.md](README.en.md)
 
 # Previsión diaria de ventas por tienda y producto
+
+[![pruebas](https://github.com/jleonceo/store-sales-forecasting-ml/actions/workflows/ci.yml/badge.svg)](https://github.com/jleonceo/store-sales-forecasting-ml/actions/workflows/ci.yml)
+[![produccion](https://github.com/jleonceo/store-sales-forecasting-ml/actions/workflows/produccion.yml/badge.svg)](https://github.com/jleonceo/store-sales-forecasting-ml/actions/workflows/produccion.yml)
 
 Cada mañana, un gran distribuidor de alimentación tiene que decidir cuánto comprar, dónde guardarlo y qué enviar a cada tienda. Todo eso depende de saber cuánto se va a vender. Este proyecto lo prevé para cada producto y tienda con 8 días de antelación, y se ejecuta cada día: suma las ventas del día anterior y recalcula la previsión.
 

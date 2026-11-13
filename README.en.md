@@ -41,16 +41,22 @@ The chart titles and labels are in Spanish; the model is shown in blue, the rule
 ## How it is built
 
 ```mermaid
-flowchart TD
-    D[Kaggle M5 daily sales<br/>20 series, 2013 to 2015] --> V[Features from the series' own history<br/>past sales, averages, calendar and price]
-    V --> M[One model per product and store<br/>HistGradientBoosting]
-    M --> P[8-day forecast in a row<br/>each day feeds the next]
-    P --> T[Store totals<br/>adding up the products]
-    P --> E[Actual sales of the day]
-    E --> X[Error against repeating<br/>the previous week]
-    X --> R{Retraining}
-    R -->|Validates as well or better| N[New model in use]
-    R -->|Validates worse| A[Current model stays]
+flowchart LR
+    subgraph S1[Model]
+        direction TB
+        D[Kaggle M5<br/>daily sales<br/>20 series, 2013 to 2015] --> V[Features from the<br/>series' own history<br/>past sales, averages,<br/>calendar and price]
+        V --> M[One model per<br/>product and store<br/>HistGradientBoosting]
+    end
+    subgraph S2[Forecast]
+        direction TB
+        P[8-day forecast in a row<br/>each day feeds the next] --> T[Store totals<br/>adding up<br/>the products]
+        P --> E[Actual sales<br/>of the day]
+        E --> X[Error against<br/>repeating the<br/>previous week]
+    end
+    S1 --> S2
+    S2 --> R{Retraining}
+    R -->|Validates as well<br/>or better| N[New model<br/>in use]
+    R -->|Validates worse| A[Current model<br/>stays]
     style R fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
     style N fill:#e8f5e9,stroke:#2e7d32,color:#1b5e20
 ```

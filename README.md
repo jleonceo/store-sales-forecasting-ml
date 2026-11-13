@@ -39,16 +39,22 @@ En la validación de noviembre, prediciendo el día siguiente, el modelo se equi
 ## Cómo funciona
 
 ```mermaid
-flowchart TD
-    D[Ventas diarias de Kaggle M5<br/>20 series, 2013 a 2015] --> V[Variables del propio historial<br/>ventas anteriores, medias, calendario y precio]
-    V --> M[Un modelo por producto y tienda<br/>HistGradientBoosting]
-    M --> P[Previsión de 8 días seguidos<br/>cada día alimenta al siguiente]
-    P --> T[Totales por tienda<br/>sumando los productos]
-    P --> E[Venta real del día]
-    E --> X[Error frente a repetir<br/>la semana anterior]
-    X --> R{Reentreno}
-    R -->|Valida igual o mejor| N[Modelo nuevo en uso]
-    R -->|Valida peor| A[Se queda el actual]
+flowchart LR
+    subgraph S1[Modelo]
+        direction TB
+        D[Ventas diarias<br/>de Kaggle M5<br/>20 series, 2013 a 2015] --> V[Variables del<br/>propio historial<br/>ventas anteriores, medias,<br/>calendario y precio]
+        V --> M[Un modelo por<br/>producto y tienda<br/>HistGradientBoosting]
+    end
+    subgraph S2[Previsión]
+        direction TB
+        P[Previsión de 8 días seguidos<br/>cada día alimenta al siguiente] --> T[Totales por tienda<br/>sumando los<br/>productos]
+        P --> E[Venta real<br/>del día]
+        E --> X[Error frente<br/>a repetir la<br/>semana anterior]
+    end
+    S1 --> S2
+    S2 --> R{Reentreno}
+    R -->|Valida igual<br/>o mejor| N[Modelo nuevo<br/>en uso]
+    R -->|Valida peor| A[Se queda<br/>el actual]
     style R fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
     style N fill:#e8f5e9,stroke:#2e7d32,color:#1b5e20
 ```

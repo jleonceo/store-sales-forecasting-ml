@@ -48,8 +48,8 @@ flowchart LR
     subgraph S2[Previsión]
         direction TB
         P[Previsión de 8 días seguidos<br/>cada día alimenta al siguiente] --> T[Totales por tienda<br/>sumando los<br/>productos]
-        P --> E[Venta real<br/>del día]
-        E --> X[Error frente<br/>a repetir la<br/>semana anterior]
+        P --> X[Error frente<br/>a repetir la<br/>semana anterior]
+        E[Venta real<br/>del día] --> X
     end
     S1 --> S2
     S2 --> R{Reentreno}

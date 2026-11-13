@@ -50,8 +50,8 @@ flowchart LR
     subgraph S2[Forecast]
         direction TB
         P[8-day forecast in a row<br/>each day feeds the next] --> T[Store totals<br/>adding up<br/>the products]
-        P --> E[Actual sales<br/>of the day]
-        E --> X[Error against<br/>repeating the<br/>previous week]
+        P --> X[Error against<br/>repeating the<br/>previous week]
+        E[Actual sales<br/>of the day] --> X
     end
     S1 --> S2
     S2 --> R{Retraining}
